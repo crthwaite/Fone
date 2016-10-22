@@ -1,49 +1,45 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta http-equiv="Conent-type" content="text/html; charset=utf-8" />
-        <title> Fone! </title>
-        {% block stylesheets %}
-        {% endblock %}
-        {% block javascripts %}
+<head>
+    <meta http-equiv="Conent-type" content="text/html; charset=utf-8" />
+    <title> Fone! </title>
+    {% block stylesheets %}
+    {% endblock %}
+    {% block javascripts %}
 
-        {% endblock %}
-        <script src="//cdnjs.cloudflare.com/ajax/libs/annyang/2.5.0/annyang.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/SpeechKITT/0.3.0/speechkitt.min.js"></script>
-        <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.2.min.js"></script>
-    </head>
-    <body>
-    <script>
-        var write = function (text) {
-            $('#sText').text('What you said is: ' + text);
-            console.log(text);
-        };
-        var wH = function () {
-            $('#sText').text("You have said hello1");
-        };
-        var commands = {
-            'write *text': write,
-            ':hello': wH
-        };
+    {% endblock %}
+    <script src="//cdnjs.cloudflare.com/ajax/libs/annyang/2.5.0/annyang.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/SpeechKITT/0.3.0/speechkitt.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.4.min.js"></script>
 
+</head>
+<body>
+<script>
+    var say = function (text) {
+        $('#sText').text('What you said is: ' + text);
+        var utterance = new SpeechSynthesisUtterance(text);
+        window.speechSynthesis.speak(utterance);
+        console.log(text);
+    };
+    var wH = function () {
+        $('#sText').text("You have said hello1");
 
-    </script>
-    <script>
-        if (annyang) {
-
-            // Let's define a comman
-            annyang.addCommands(commands);
-
-            // Tell KITT to use annyang
-            SpeechKITT.annyang();
-
-            // Define a stylesheet for KITT to use
-            SpeechKITT.setStylesheet('//cdnjs.cloudflare.com/ajax/libs/SpeechKITT/0.3.0/themes/flat-emerald.css');
-
-            // Render KITT's interface
-            SpeechKITT.vroom();
-        }
-    </script>
-    <p1 id="sText">Test text!</p1>
-    </body>
+    };
+    var commands = {
+        'say *text': say,
+        ':hello': wH
+    };
+    if (annyang) {
+        // Let's define a comman
+        annyang.addCommands(commands);
+        // Tell KITT to use annyang
+        SpeechKITT.annyang();
+        // Define a stylesheet for KITT to use
+        SpeechKITT.setStylesheet('//cdnjs.cloudflare.com/ajax/libs/SpeechKITT/0.3.0/themes/flat-emerald.css');
+        // Render KITT's interface
+        SpeechKITT.vroom();
+    }
+</script>
+<p1 id="sText">Test text!</p1>
+</body>
 </html>
