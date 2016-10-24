@@ -1,6 +1,6 @@
 <?php
 
-namespace MainPageBundle\Controller;
+namespace Fone\MainPageBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\BrowserKit\Response;

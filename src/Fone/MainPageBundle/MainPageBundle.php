@@ -1,6 +1,6 @@
 <?php
 
-namespace MainPageBundle;
+namespace Fone\MainPageBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

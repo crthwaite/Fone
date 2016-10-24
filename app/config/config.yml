@@ -65,3 +65,43 @@ swiftmailer:
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     spool:     { type: memory }
+
+doctrine_mongodb:
+    connections:
+        default:
+            server: "%mongodb_server%"
+            options: {}
+    default_database: "%mongodb_name%"
+    document_managers:
+        default:
+            auto_mapping: true
+            mappings:
+                gedmo_translatable:
+                    type: annotation
+                    prefix: Gedmo\Translatable\Document
+                    dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Translatable/Entity"
+                    alias: GedmoTranslatable # (optional) it will default to the name set for the mapping
+                    is_bundle: false
+                gedmo_translator:
+                    type: annotation
+                    prefix: Gedmo\Translator\Document
+                    dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Translator/Entity"
+                    alias: GedmoTranslator # (optional) it will default to the name set for the mapping
+                    is_bundle: false
+                gedmo_loggable:
+                    type: annotation
+                    prefix: Gedmo\Loggable\Document
+                    dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Loggable/Entity"
+                    alias: GedmoLoggable # (optional) it will default to the name set for the mappingmapping
+                    is_bundle: false
+                gedmo_tree:
+                    type: annotation
+                    prefix: Gedmo\Tree\Document
+                    dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Tree/Entity"
+                    alias: GedmoTree # (optional) it will default to the name set for the mapping
+                    is_bundle: false
+
+fos_user:
+    db_driver: mongodb # other valid values are 'mongodb', 'couchdb' and 'propel'
+    firewall_name: main
+    user_class: Fone\UserBundle\Document\User
