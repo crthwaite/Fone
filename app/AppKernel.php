@@ -23,6 +23,7 @@ class AppKernel extends Kernel
             //Application Bundles
             new AppBundle\AppBundle(),
             new Fone\MainPageBundle\MainPageBundle(),
+            new Fone\UserBundle\UserBundle()
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {

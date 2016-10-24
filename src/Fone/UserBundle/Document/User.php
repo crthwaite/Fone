@@ -9,6 +9,7 @@
 
 namespace Fone\UserBundle\Document;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -39,6 +40,13 @@ class User extends BaseUser
     protected $surname;
 
     /**
+     * @var ArrayCollection|Account[]
+     *
+     * @MongoDB\ReferenceMany(targetDocument="Fone\UserBundle\Document\Account", simple=true, mappedBy="user")
+     */
+    protected $accounts;
+
+    /**
      * @var \DateTime
      *
      * @MongoDB\Date
@@ -54,12 +62,41 @@ class User extends BaseUser
      */
     private $modifiedAt;
 
+    public function __construct()
+    {
+        parent::__construct();
+        $this->accounts = new ArrayCollection();
+    }
+
     /**
      * @return mixed
      */
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRoles()
+    {
+        return $this->roles;
+    }
+
+    /**
+     * @param array $roles
+     * @return User
+     */
+    public function setRoles(array $roles)
+    {
+        $this->roles = array();
+
+        foreach ($roles as $role) {
+            $this->addRole($role);
+        }
+
+        return $this;
     }
 
     /**
@@ -92,6 +129,44 @@ class User extends BaseUser
     public function setSurname($surname)
     {
         $this->surname = $surname;
+    }
+
+    /**
+     * @return ArrayCollection | Account[]
+     */
+    public function getAccounts()
+    {
+        return $this->accounts;
+    }
+
+    /**
+     * @param ArrayCollection | Account[] $accounts
+     */
+    public function setAccounts($accounts)
+    {
+        $this->accounts = $accounts;
+    }
+
+    /**
+     * @param Account $account
+     * @return User
+     */
+    public function addAccount(Account $account)
+    {
+        $this->accounts->add($account);
+
+        return $this;
+    }
+
+    /**
+     * @param Account $account
+     * @return User
+     */
+    public function removeAccount(Account $account)
+    {
+        $this->accounts->removeElement($account);
+
+        return $this;
     }
 
     /**
