@@ -23,6 +23,7 @@ class AppKernel extends Kernel
             //Application Bundles
             new AppBundle\AppBundle(),
             new Fone\MainPageBundle\MainPageBundle(),
+            new Fone\TransactionBundle\TransactionBundle(),
             new Fone\UserBundle\UserBundle()
         );
 
