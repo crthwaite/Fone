@@ -57,7 +57,7 @@ class Transaction
     protected $operationDate;
 
     /**
-     * @MongoDB\Int
+     * @MongoDB\Timestamp
      */
     protected $time;
 
