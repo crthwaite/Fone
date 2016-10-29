@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="09e09b5b-7647-498d-a1ed-01453285ecce" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Fone/MainPageBundle/Resources/public/css/main.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/composer.json" afterPath="$PROJECT_DIR$/composer.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Fone/MainPageBundle/Resources/public/js/main.js" afterPath="$PROJECT_DIR$/src/Fone/MainPageBundle/Resources/public/js/main.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Fone/MainPageBundle/Resources/views/Default/main.html.twig" afterPath="$PROJECT_DIR$/src/Fone/MainPageBundle/Resources/views/Default/main.html.twig" />
-    </list>
+    <list default="true" id="09e09b5b-7647-498d-a1ed-01453285ecce" name="Default" comment="" />
     <ignored path="Fone.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -525,12 +519,12 @@
       <workItem from="1477494987753" duration="39000" />
       <workItem from="1477495070722" duration="43000" />
       <workItem from="1477495289066" duration="65000" />
-      <workItem from="1477728313883" duration="15767000" />
+      <workItem from="1477728313883" duration="15836000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="28991000" />
+    <option name="totallyTimeSpent" value="29060000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="24" width="1301" height="744" extended-state="6" />
