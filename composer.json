@@ -24,7 +24,8 @@
    	"friendsofsymfony/jsrouting-bundle": "^1.5",
    	"components/jquery": "dev-master",
    	"oyejorge/less.php": "~1.5",
-   	"gedmo/doctrine-extensions": "dev-master"
+   	"gedmo/doctrine-extensions": "dev-master",
+        "symfony/asset": "^3.1"
     },
     "require-dev": {
         "sensio/generator-bundle": "~3.0",
