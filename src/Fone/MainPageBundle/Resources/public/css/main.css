@@ -2,41 +2,6 @@ html,body {
     height: 100%;
 }
 
-#parent {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    float: left;
-}
-
-#button {
-    position: relative;
-    margin: 5px auto;
-    height: 40%;
-    width: 100%;
-}
-#text {
-    position: relative;
-    margin: 5px auto;
-    height: 40%;
-    width: 100%;
-    border-top: 1px solid darkgray;
-}
-#sButton {
-    position: relative;
-    height: 100px;
-    width: 100px;
-    border-radius: 50%;
-    background-color: white;
-    border: 2px solid black;
-    margin: 0 auto;
-    font-size: 70px;
-}
-#sButton:hover{
-    background-color: #636363;
-    text-align: center;
-    color: white;
-}
-h1{
-position: relative;
-}
+body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
+.w3-navbar,h1,button {font-family: "Montserrat", sans-serif}
+.fa-anchor,.fa-coffee {font-size:100px}
