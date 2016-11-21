@@ -26,7 +26,6 @@ var catSpend = function (category,year) {
 var siteMonth = function (site,month) {
     $('#result').text("Tu sitio es: " + site + " y el año que has dicho es: " + month);
     speechSynth("Tu sitio es: " + site  + "y el mes del año que has dicho es: " + month);
-
 };
 var compareMonths = function (cat,month1,month2) {
   $("#result").text("Tu categoría es: " + cat + " y has pedido la comparación entre: " +
@@ -168,7 +167,20 @@ var comDesc = {
     8: 'Debes decir: comando, seguido del número de comando deseado'
 };
 
-
+var comForDif = [
+    /*Prova*/
+    'dime *text',
+    'hola',
+    /*Preguntes bancs*/
+    'gastado en :category :year',
+    'categoría mas dinero :month',
+    'categoría más dinero :month',
+    'mejor :site de :month',
+    'compara gastos :cat entre *month1 y *month2',
+    'ciudad más veces *time',
+    'Refresca',
+    'comando :num'
+];
     /* Init methods */
 function startAnnyang(){
     if (annyang) {
@@ -177,6 +189,12 @@ function startAnnyang(){
         annyang.start();
         annyang.debug();
         speechSynth('Reconocimiento activado!');
+        annyang.addCallback('resultNoMatch', function(userSaid, commandText, phrases) {
+            var diff = minimumCommandDifference(userSaid,comForDif,10);
+            if(diff === -1)  speechSynth('No hemos encontrado ningún comando parecido a tu pregunta: puedes usar el comando 9 para comprender los comandos!');
+            else speechSynth('Quizàs te refieres al comando:' + diff);
+
+        });
     }
 }
 
