@@ -13,3 +13,4 @@
 composer.lock
 /.idea/*
 /src/Fone/UserBundle/DataFixtures/MongoDB/*.json
+/src/Fone/TransactionBundle/DataFixtures/MongoDB/*.json
