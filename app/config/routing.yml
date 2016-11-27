@@ -6,6 +6,11 @@ app:
     resource: "@AppBundle/Controller/"
     type:     annotation
 
+transaction:
+    resource: "@TransactionBundle/Controller/DefaultController.php"
+    type:     annotation
+    prefix:   /transactions/
+
 main:
     path: /
     defaults: {_controller: MainPageBundle:Default:main }
