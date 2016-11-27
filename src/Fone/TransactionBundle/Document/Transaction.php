@@ -106,10 +106,14 @@ class Transaction
 
     /**
      * @param mixed $description
+     *
+     * @return $this
      */
     public function setDescription($description)
     {
         $this->description = $description;
+
+        return $this;
     }
 
     /**
@@ -122,10 +126,14 @@ class Transaction
 
     /**
      * @param mixed $state
+     *
+     * @return $this
      */
     public function setState($state)
     {
         $this->state = $state;
+
+        return $this;
     }
 
     /**
@@ -138,10 +146,14 @@ class Transaction
 
     /**
      * @param mixed $city
+     *
+     * @return $this
      */
     public function setCity($city)
     {
         $this->city = $city;
+
+        return $this;
     }
 
     /**
@@ -154,10 +166,14 @@ class Transaction
 
     /**
      * @param mixed $zip
+     *
+     * @return $this
      */
     public function setZip($zip)
     {
         $this->zip = $zip;
+
+        return $this;
     }
 
     /**
@@ -170,10 +186,14 @@ class Transaction
 
     /**
      * @param mixed $address
+     *
+     * @return $this
      */
     public function setAddress($address)
     {
         $this->address = $address;
+
+        return $this;
     }
 
     /**
@@ -186,10 +206,14 @@ class Transaction
 
     /**
      * @param mixed $amount
+     *
+     * @return $this
      */
     public function setAmount($amount)
     {
         $this->amount = $amount;
+
+        return $this;
     }
 
     /**
@@ -202,10 +226,14 @@ class Transaction
 
     /**
      * @param mixed $operationDate
+     *
+     * @return $this
      */
     public function setOperationDate($operationDate)
     {
         $this->operationDate = $operationDate;
+
+        return $this;
     }
 
     /**
@@ -218,10 +246,14 @@ class Transaction
 
     /**
      * @param mixed $time
+     *
+     * @return $this
      */
     public function setTime($time)
     {
         $this->time = $time;
+
+        return $this;
     }
 
     /**
@@ -234,10 +266,14 @@ class Transaction
 
     /**
      * @param mixed $peerActivity
+     *
+     * @return $this
      */
     public function setPeerActivity($peerActivity)
     {
         $this->peerActivity = $peerActivity;
+
+        return $this;
     }
 
     /**
@@ -250,10 +286,14 @@ class Transaction
 
     /**
      * @param mixed $peerName
+     *
+     * @return $this
      */
     public function setPeerName($peerName)
     {
         $this->peerName = $peerName;
+
+        return $this;
     }
 
     /**
@@ -266,10 +306,14 @@ class Transaction
 
     /**
      * @param mixed $lat
+     *
+     * @return $this
      */
     public function setLat($lat)
     {
         $this->lat = $lat;
+
+        return $this;
     }
 
     /**
@@ -282,10 +326,14 @@ class Transaction
 
     /**
      * @param mixed $lon
+     *
+     * @return $this
      */
     public function setLon($lon)
     {
         $this->lon = $lon;
+
+        return $this;
     }
 
     /**
@@ -298,9 +346,13 @@ class Transaction
 
     /**
      * @param Account $account
+     *
+     * @return $this
      */
     public function setAccount($account)
     {
         $this->account = $account;
+
+        return $this;
     }
 }
