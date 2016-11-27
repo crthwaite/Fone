@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: christopher
- * Date: 24/10/16
- * Time: 13:55
- */
-
 namespace Fone\UserBundle\Document;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -28,16 +21,6 @@ class User extends BaseUser
     protected $id;
 
     protected $roles;
-
-    /**
-     * @MongoDB\String
-     */
-    protected $name;
-
-    /**
-     * @MongoDB\String
-     */
-    protected $surname;
 
     /**
      * @var ArrayCollection|Account[]
@@ -99,37 +82,6 @@ class User extends BaseUser
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param mixed $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getSurname()
-    {
-        return $this->surname;
-    }
-
-    /**
-     * @param mixed $surname
-     */
-    public function setSurname($surname)
-    {
-        $this->surname = $surname;
-    }
 
     /**
      * @return ArrayCollection | Account[]
