@@ -50,9 +50,17 @@ class Account
      */
     protected $transactions;
 
+    /**
+     * @var array
+     *
+     * @MongoDB\Hash
+     */
+    protected $cards;
+
     public function __construct()
     {
         $this->transactions = new ArrayCollection();
+        $this->cards = array();
     }
 
     /**
@@ -73,10 +81,14 @@ class Account
 
     /**
      * @param mixed $amount
+     *
+     * @return $this
      */
     public function setAmount($amount)
     {
         $this->amount = $amount;
+
+        return $this;
     }
 
     /**
@@ -88,7 +100,9 @@ class Account
     }
 
     /**
-     * @param mixed $IBAN
+     * @param string $IBAN
+     *
+     * @return $this
      */
     public function setIBAN($IBAN)
     {
@@ -104,11 +118,15 @@ class Account
     }
 
     /**
-     * @param mixed $user
+     * @param User $user
+     *
+     * @return $this
      */
-    public function setUser($user)
+    public function setUser(User $user)
     {
         $this->user = $user;
+
+        return $this;
     }
 
     /**
@@ -121,10 +139,14 @@ class Account
 
     /**
      * @param ArrayCollection| Transaction[] $transactions
+     *
+     * @return $this
      */
     public function setTransactions($transactions)
     {
         $this->transactions = $transactions;
+
+        return $this;
     }
 
     /**
@@ -145,6 +167,54 @@ class Account
     public function removeTransaction(Transaction $transaction)
     {
         $this->transactions->removeElement($transaction);
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCards()
+    {
+        return $this->cards;
+    }
+
+    /**
+     * @param array $cards
+     *
+     * @return $this
+     */
+    public function setCards($cards)
+    {
+        $this->cards = $cards;
+
+        return $this;
+    }
+
+    /**
+     * @param string $card
+     *
+     * @return $this
+     */
+    public function addCard($card)
+    {
+        if (array_search($card, $this->cards) === false) {
+            $this->cards[] = $card;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param $card
+     *
+     * @return $this
+     */
+    public function removeCard($card)
+    {
+        if ($key = array_search($card, $this->cards) !== false) {
+            unset($this->cards[$key]);
+        }
 
         return $this;
     }

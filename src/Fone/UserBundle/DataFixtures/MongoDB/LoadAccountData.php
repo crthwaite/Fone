@@ -1,23 +1,20 @@
 <?php
 
-
 namespace Fone\UserBundle\DataFixtures\MongoDB;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Fone\UserBundle\Document\User;
+use Fone\UserBundle\Document\Account;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class LoadUserData extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface
+class LoadAccountData extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface
 {
-    /**
-     * @var ContainerInterface
-     */
+    /** @var  ContainerInterface */
     private $container;
 
-    private $users;
+    private $accounts;
 
     /**
      * Sets the container.
@@ -30,16 +27,6 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface, C
     }
 
     /**
-     * Get the order of this fixture
-     *
-     * @return integer
-     */
-    public function getOrder()
-    {
-        return 1;
-    }
-
-    /**
      * Load data fixtures with the passed EntityManager
      *
      * @param ObjectManager $manager
@@ -48,17 +35,14 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface, C
     {
         $this->initVariables();
 
-        foreach ($this->users as $key => $userData) {
-            $user = new User();
-            $user
-                ->setEmail($userData['email'])
-                ->setPlainPassword($userData['password'])
-                ->setUserName($userData['username'])
-                ->setEnabled(true)
-                ->setRoles(array('ROLE_USER'));
-
-            $manager->persist($user);
-            $this->setReference($userData['username'], $user);
+        foreach ($this->accounts as $key => $accountData) {
+            $account = new Account();
+            $account
+                ->setUser($this->getReference($accountData['user']))
+                ->setAmount($accountData['amount'])
+                ->setIBAN($accountData['IBAN']);
+            $manager->persist($account);
+            $this->setReference($accountData['IBAN'], $account);
         }
 
         $manager->flush();
@@ -66,25 +50,40 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface, C
 
     private function initVariables()
     {
-        $this->users = array();
+        $this->accounts = array();
 
         $customerJson = $this->container->get('kernel')->getRootDir() .
             '/../src/Fone/UserBundle/DataFixtures/MongoDB/customer.json';
         $file = fopen($customerJson, 'r');
 
         $i = 1;
+        $j = 1;
         while (! feof($file)) {
             $json = json_decode(fgets($file), true);
-            $customer = $json['customer'];
-            $this->users['user' . strval($i)] = array(
-                'email' => $customer['email'],
-                'username' => 'user' . strval($i),
-                'password' => '12345'
-            );
+            $customerAccount = $json['contracts']['accounts'];
+            foreach ($customerAccount as $account) {
+                $this->accounts['account' . strval($j)] = array(
+                    'IBAN' => $account['id'],
+                    'amount' => $account['amount'],
+                    'user' => 'user' . strval($i)
+                );
+
+                ++$j;
+            }
 
             ++$i;
         }
 
         fclose($file);
+    }
+
+    /**
+     * Get the order of this fixture
+     *
+     * @return integer
+     */
+    public function getOrder()
+    {
+        return 2;
     }
 }

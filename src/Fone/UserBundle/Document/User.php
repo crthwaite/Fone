@@ -25,25 +25,14 @@ class User extends BaseUser
     /**
      * @var ArrayCollection|Account[]
      *
-     * @MongoDB\ReferenceMany(targetDocument="Fone\UserBundle\Document\Account", simple=true, mappedBy="user")
+     * @MongoDB\ReferenceMany(
+     *     targetDocument="Fone\UserBundle\Document\Account",
+     *     simple=true,
+     *     mappedBy="user",
+     *     cascade="persist"
+     * )
      */
     protected $accounts;
-
-    /**
-     * @var \DateTime
-     *
-     * @MongoDB\Date
-     * @Gedmo\Timestampable(on="create")
-     */
-    private $createdAt;
-
-    /**
-     * @var \DateTime
-     *
-     * @MongoDB\Date
-     * @Gedmo\Timestampable
-     */
-    private $modifiedAt;
 
     public function __construct()
     {
