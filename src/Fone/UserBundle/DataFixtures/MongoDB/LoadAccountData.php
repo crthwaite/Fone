@@ -40,9 +40,13 @@ class LoadAccountData extends AbstractFixture implements OrderedFixtureInterface
             $account
                 ->setUser($this->getReference($accountData['user']))
                 ->setAmount($accountData['amount'])
+                ->setCards($accountData['cards'])
                 ->setIBAN($accountData['IBAN']);
             $manager->persist($account);
             $this->setReference($accountData['IBAN'], $account);
+            foreach ($accountData['cards'] as $card) {
+                $this->setReference($card, $account);
+            }
         }
 
         $manager->flush();
@@ -61,11 +65,14 @@ class LoadAccountData extends AbstractFixture implements OrderedFixtureInterface
         while (! feof($file)) {
             $json = json_decode(fgets($file), true);
             $customerAccount = $json['contracts']['accounts'];
+            $customerCreditCards = $json['contracts']['credit_cards'];
+            $customerDebitCards = $json['contracts']['debit_cards'];
             foreach ($customerAccount as $account) {
                 $this->accounts['account' . strval($j)] = array(
                     'IBAN' => $account['id'],
                     'amount' => $account['amount'],
-                    'user' => 'user' . strval($i)
+                    'user' => 'user' . strval($i),
+                    'cards' => $this->addCards($account['id'], $customerCreditCards, $customerDebitCards)
                 );
 
                 ++$j;
@@ -75,6 +82,25 @@ class LoadAccountData extends AbstractFixture implements OrderedFixtureInterface
         }
 
         fclose($file);
+    }
+
+    private function addCards($IBAN, $customerCreditCards, $customerDebitCards)
+    {
+        $cards = array();
+
+        foreach ($customerCreditCards as $creditCard) {
+            if ($creditCard['related_account_id'] == $IBAN) {
+                $cards[] = $creditCard['id'];
+            }
+        }
+
+        foreach ($customerDebitCards as $debitCard) {
+            if ($debitCard['related_account_id'] == $IBAN) {
+                $cards[] = $debitCard['id'];
+            }
+        }
+
+        return $cards;
     }
 
     /**

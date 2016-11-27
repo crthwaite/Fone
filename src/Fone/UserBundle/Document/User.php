@@ -28,8 +28,7 @@ class User extends BaseUser
      * @MongoDB\ReferenceMany(
      *     targetDocument="Fone\UserBundle\Document\Account",
      *     simple=true,
-     *     mappedBy="user",
-     *     cascade="persist"
+     *     mappedBy="user"
      * )
      */
     protected $accounts;
