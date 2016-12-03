@@ -32,14 +32,17 @@ var com3 = {
 };
 
 var catSpend = function (category,period) {
-    $('#result').text("Tu categoría es: " + category + " y el periodo dicho es: " + period);
+   
     var dataParsed = chrono.parse(period);
     if(dataParsed.length > 0){
          /*Pass parameters to back-end*/
         var dates = parseDate(dataParsed[0]);
+        console.log(dates[0]);
+        $('#result').text("Tu categoría es: " + category + " y el periodo dicho es: " + period);
+        speechSynth("Tu categoría es: " + category + ",y el periodo dicho es: " + period);
     } else speechSynth('Periodo de tiempo incorrecto');
 
-    speechSynth("Tu categoría es: " + category + ",y el periodo dicho es: " + period);
+   
 };
 
 
@@ -50,13 +53,15 @@ var com4 = {
 };
 
 var sOver = function (period) {
-    $('#result').text("Tu periodo es: " + period);
-    speechSynth("Tu periodo es: " + period);
+    
     var dataParsed = chrono.parse(period);
     console.log(dataParsed);
     if(dataParsed.length > 0){
         /*Pass parameters to back-end*/
         var dates = parseDate(dataParsed[0]);
+         console.log(dates[0]);
+        $('#result').text("Tu periodo es: " + period);
+        speechSynth("Tu periodo es: " + period);
     } else speechSynth('Periodo de tiempo incorrecto');
 
 };
@@ -69,12 +74,15 @@ var com5 = {
 };
 
 var siteMonth = function (site,period) {
-    $('#result').text("Tu sitio es: " + site + " y periodo dicho es: " + period);
-    speechSynth("Tu sitio es: " + site  + "y el periodo dicho es: " + period);
+  
+   
      var dataParsed = chrono.parse(period);
     if(dataParsed.length > 0){
         /*Pass parameters to back-end*/
         var dates = parseDate(dataParsed[0]);
+         console.log(dates[0]);
+        $('#result').text("Tu sitio es: " + site + " y periodo dicho es: " + period);
+        speechSynth("Tu sitio es: " + site  + "y el periodo dicho es: " + period);
     } else speechSynth('Periodo de tiempo incorrecto');
 
 };
@@ -87,12 +95,14 @@ var com6 = {
 };
 
 var compareCat = function (cat,period) {
-  $("#result").text("Tu categoría es: " + cat + " y has pedido la comparación entre: " +
-    period);
+ 
    var dataParsed = chrono.parse(period);
     if(dataParsed.length > 0){
         /*Pass parameters to back-end*/
         var dates = parseDate(dataParsed[0]);
+         console.log(dates[0]);
+         $("#result").text("Tu categoría es: " + cat + " y has pedido la comparación entre: " +
+         period);
     } else speechSynth('Periodo de tiempo incorrecto');
 
 };
@@ -105,11 +115,13 @@ var com7 = {
 };
 
 var city = function (period) {
-    $('#result').text("Quieres saber en que ciudad has estado mas tiempo durante: " + period);
-    speechSynth("Quieres saber en que ciudad has estado mas tiempo durante: " + period);
+   
     var dataParsed = chrono.parse(period);
     if(dataParsed.length > 0){
       var dates = parseDate(dataParsed[0]);
+      console.log(dates[0]);
+       $('#result').text("Quieres saber en que ciudad has estado mas tiempo durante: " + period);
+       speechSynth("Quieres saber en que ciudad has estado mas tiempo durante: " + period);
     } else speechSynth('Periodo de tiempo incorrecto');
 
 }
@@ -193,7 +205,7 @@ function parseDate(period){
     startDate = period.start.date();
     var date = [];
     var day = startDate.getDate();
-    var month = startDate.getMonth();
+    var month = startDate.getMonth() + 1;
     var year = startDate.getFullYear();
     date.push(day);
     date.push(month);
@@ -283,10 +295,8 @@ function minimumCommandDifference(user,th) {
 
 /* ######################################################################*/
 
+
 /* ######## Init methods ################################################*/
-
-
-
 
 
 /*Variables*/
@@ -353,7 +363,6 @@ $(document).ready(function() {
         ready = 1;
     }
 });
-
 
 
 /* ######################################################################*/
