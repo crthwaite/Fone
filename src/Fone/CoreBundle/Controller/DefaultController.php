@@ -25,5 +25,5 @@ class DefaultController extends Controller
             return $this->redirectToRoute('fos_user_security_login');
         }
     }
-    
+
 }

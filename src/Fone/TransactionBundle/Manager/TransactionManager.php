@@ -14,7 +14,9 @@ class TransactionManager extends CoreManager
         return $this->getRepository()->findBy(array("id" => $id));
     }
 
-    public function findMostSpentCategoryMonth($month)
+
+
+    public function findMostSpentCategoryMonth($user, $month)
     {
         $transactions = $this->getRepository()->findAll();
         $filter = array();
@@ -37,6 +39,10 @@ class TransactionManager extends CoreManager
         $filter = asort($filter);
 
         return $filter;
+    }
+
+    public function findByUser($user) {
+        return $this->getRepository()->findByUser($user);
     }
 
     /** @return TransactionRepository */

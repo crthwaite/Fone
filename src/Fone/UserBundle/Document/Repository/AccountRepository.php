@@ -8,7 +8,6 @@
 
 namespace Fone\UserBundle\Document\Repository;
 
-
 use Doctrine\ODM\MongoDB\DocumentRepository;
 
 class AccountRepository extends DocumentRepository

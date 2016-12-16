@@ -2,7 +2,9 @@
 
 namespace Fone\TransactionBundle\Controller;
 
+use Doctrine\ODM\MongoDB\DocumentManager;
 use Fone\TransactionBundle\Manager\TransactionManager;
+use Fone\UserBundle\Manager\AccountManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -24,11 +26,28 @@ class DefaultController extends Controller
      */
     public function spentMostCategoryMonthAction(Request $request, $month)
     {
+        $user = $this->getUser();
         $tm = $this->getTransactionManager();
         $month = $this->getNumericMonth($month);
-        $result = $tm->findMostSpentCategoryMonth($month);
+        $result = $tm->findMostSpentCategoryMonth($user, $month);
 
         return array('result' => $result[0]);
+    }
+
+    /**
+     * @Route("/user/transactions", name="transaction_default_get_user_transactions")
+     *
+     * @Template()
+     * @return array
+     */
+    public function getUserTransactionsAction()
+    {
+        $user = $this->getUser();
+        $am = $this->getAccountManager();
+        $accounts = $am->findByUser($user);
+
+        return array('accounts' => $accounts);
+
     }
 
     private function getNumericMonth($month)
@@ -82,5 +101,11 @@ class DefaultController extends Controller
     private function getTransactionManager()
     {
         return $this->get('transaction.transaction_manager');
+    }
+
+    /** @return AccountManager */
+    private function getAccountManager()
+    {
+        return $this->get('user.account_manager');
     }
 }

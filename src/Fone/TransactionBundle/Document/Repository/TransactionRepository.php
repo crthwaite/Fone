@@ -13,5 +13,8 @@ use Doctrine\ODM\MongoDB\DocumentRepository;
 
 class TransactionRepository extends DocumentRepository
 {
+    public function findByUser($user)
+    {
 
+    }
 }
