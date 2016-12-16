@@ -1,3 +1,8 @@
+default:
+    resource: "@CoreBundle/Controller"
+    type:     annotation
+    prefix:   /
+
 main_page:
     resource: "@MainPageBundle/Controller"
     type:     annotation
