@@ -160,6 +160,19 @@ var myTransactions = function(num) {
         url: url,
         success: function(result) {
             $('#result').html(result);
+            var $headerRow = $("#result table tbody tr:first-child");
+            var $result = $('#result table tbody tr');
+            var j = 0;
+            $result.each(function() {
+                if (j != 0){
+                    for(var i = 1; i<= 3; ++i){
+                        speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
+                        speechSynth($(this).find('td:nth-child(' + i + ')').text());
+                    }
+                }
+                j++;
+            });
+
         }
     });
 }
