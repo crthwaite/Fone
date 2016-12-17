@@ -20,4 +20,13 @@ class TransactionRepository extends DocumentRepository
             ->getQuery()
             ->execute();
     }
+
+    public function getCategoryMostSpentMonth($accountIds, $month)
+    {
+        return $this->createQueryBuilder()
+            ->field('account')->in($accountIds)
+            ->field('operationMonth')->equals($month)
+            ->getQuery()
+            ->execute();
+    }
 }

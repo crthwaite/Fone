@@ -15,7 +15,6 @@ class DefaultController extends Controller
 {
     /**
      * @param string $month
-     * @param Request $request
      *
      * @Route(
      *     "/spent/most/category/{month}",
@@ -25,14 +24,17 @@ class DefaultController extends Controller
      * @Template()
      * @return array
      */
-    public function spentMostCategoryMonthAction(Request $request, $month)
+    public function spentMostCategoryMonthAction($month)
     {
         $user = $this->getUser();
-        $tm = $this->getTransactionManager();
-        $month = $this->getNumericMonth($month);
-        $result = $tm->findMostSpentCategoryMonth($user, $month);
+        $accountIds = $this->_getAccountIds($user);
 
-        return array('result' => $result[0]);
+        $month = $this->getNumericMonth($month);
+
+        $tm = $this->getTransactionManager();
+        $result = $tm->findCategoryMostSpentMonth($accountIds, $month);
+
+        return array('result' => $result);
     }
 
     /**
@@ -43,14 +45,8 @@ class DefaultController extends Controller
     public function getUserTransactionsAction()
     {
         $user = $this->getUser();
-        $am = $this->getAccountManager();
-        $accounts = $am->findByUser($user);
-        $accountIds = array();
-        /** @var Account $account */
-        foreach ($accounts as $account)
-        {
-            $accountIds[] = $account->getId();
-        }
+        $accountIds = $this->_getAccountIds($user);
+
         $tm = $this->getTransactionManager();
         $transactions = $tm->findByAccountsIds($accountIds);
 
@@ -106,6 +102,20 @@ class DefaultController extends Controller
         }
 
         return $num;
+    }
+
+    private function _getAccountIds($user)
+    {
+        $am = $this->getAccountManager();
+        $accounts = $am->findByUser($user);
+        $accountIds = array();
+        /** @var Account $account */
+        foreach ($accounts as $account)
+        {
+            $accountIds[] = $account->getId();
+        }
+
+        return $accountIds;
     }
 
     /** @return TransactionManager */
