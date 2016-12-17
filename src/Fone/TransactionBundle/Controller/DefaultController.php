@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 class DefaultController extends Controller
 {
@@ -38,11 +39,11 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/user/transactions", name="transaction_default_get_user_transactions")
-     *
+     * @Route("/user/transactions", name="transaction_default_get_user_transactions", options={"expose"=true})
+     * @Method({"POST", "GET"})
      * @return array
      */
-    public function getUserTransactionsAction()
+    public function getUserTransactionsAction(Request $request)
     {
         $user = $this->getUser();
         $accountIds = $this->_getAccountIds($user);
@@ -54,7 +55,6 @@ class DefaultController extends Controller
         return $this->render('TransactionBundle:Default:getUserTransactions.html.twig', array(
             'transactions' => $transactions
         ));
-
     }
 
     private function getNumericMonth($month)
