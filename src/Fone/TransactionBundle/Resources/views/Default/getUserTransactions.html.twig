@@ -1,5 +1,14 @@
-<h1>Number of transactions: {{ transactions | length }}</h1>
-
-{% for transaction in transactions %}
-    <h4>{{ transaction.id }}</h4>
-{% endfor %}
+<table>
+    <tr>
+        <th>Descripción</th>
+        <th>Fecha</th>
+        <th>Cantidad</th>
+    </tr>
+    {% for transaction in transactions %}
+        <tr>
+            <td>{{ transaction.description }}</td>
+            <td>{{ transaction.operationDate | date('d-M-Y') }}</td>
+            <td>{{ transaction.amount }}</td>
+        </tr>
+    {% endfor %}
+</table>

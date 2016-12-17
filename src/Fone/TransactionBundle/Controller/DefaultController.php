@@ -10,12 +10,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 class DefaultController extends Controller
 {
     /**
      * @param string $month
-     * @param Request $request
      *
      * @Route(
      *     "/spent/most/category/{month}",
@@ -25,32 +25,29 @@ class DefaultController extends Controller
      * @Template()
      * @return array
      */
-    public function spentMostCategoryMonthAction(Request $request, $month)
+    public function spentMostCategoryMonthAction($month)
     {
         $user = $this->getUser();
-        $tm = $this->getTransactionManager();
-        $month = $this->getNumericMonth($month);
-        $result = $tm->findMostSpentCategoryMonth($user, $month);
+        $accountIds = $this->_getAccountIds($user);
 
-        return array('result' => $result[0]);
+        $month = $this->getNumericMonth($month);
+
+        $tm = $this->getTransactionManager();
+        $result = $tm->findCategoryMostSpentMonth($accountIds, $month);
+
+        return array('result' => $result);
     }
 
     /**
-     * @Route("/user/transactions", name="transaction_default_get_user_transactions")
-     *
+     * @Route("/user/transactions", name="transaction_default_get_user_transactions", options={"expose"=true})
+     * @Method({"POST", "GET"})
      * @return array
      */
-    public function getUserTransactionsAction()
+    public function getUserTransactionsAction(Request $request)
     {
         $user = $this->getUser();
-        $am = $this->getAccountManager();
-        $accounts = $am->findByUser($user);
-        $accountIds = array();
-        /** @var Account $account */
-        foreach ($accounts as $account)
-        {
-            $accountIds[] = $account->getId();
-        }
+        $accountIds = $this->_getAccountIds($user);
+
         $tm = $this->getTransactionManager();
         $transactions = $tm->findByAccountsIds($accountIds);
 
@@ -58,7 +55,6 @@ class DefaultController extends Controller
         return $this->render('TransactionBundle:Default:getUserTransactions.html.twig', array(
             'transactions' => $transactions
         ));
-
     }
 
     private function getNumericMonth($month)
@@ -106,6 +102,20 @@ class DefaultController extends Controller
         }
 
         return $num;
+    }
+
+    private function _getAccountIds($user)
+    {
+        $am = $this->getAccountManager();
+        $accounts = $am->findByUser($user);
+        $accountIds = array();
+        /** @var Account $account */
+        foreach ($accounts as $account)
+        {
+            $accountIds[] = $account->getId();
+        }
+
+        return $accountIds;
     }
 
     /** @return TransactionManager */

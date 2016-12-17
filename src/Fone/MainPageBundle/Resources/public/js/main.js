@@ -32,7 +32,7 @@ var com3 = {
 };
 
 var catSpend = function (category,period) {
-   
+
     var dataParsed = chrono.parse(period);
     if(dataParsed.length > 0){
          /*Pass parameters to back-end*/
@@ -42,7 +42,7 @@ var catSpend = function (category,period) {
         speechSynth("Tu categoría es: " + category + ",y el periodo dicho es: " + period);
     } else speechSynth('Periodo de tiempo incorrecto');
 
-   
+
 };
 
 
@@ -53,7 +53,7 @@ var com4 = {
 };
 
 var sOver = function (period) {
-    
+
     var dataParsed = chrono.parse(period);
     console.log(dataParsed);
     if(dataParsed.length > 0){
@@ -74,8 +74,8 @@ var com5 = {
 };
 
 var siteMonth = function (site,period) {
-  
-   
+
+
      var dataParsed = chrono.parse(period);
     if(dataParsed.length > 0){
         /*Pass parameters to back-end*/
@@ -95,7 +95,7 @@ var com6 = {
 };
 
 var compareCat = function (cat,period) {
- 
+
    var dataParsed = chrono.parse(period);
     if(dataParsed.length > 0){
         /*Pass parameters to back-end*/
@@ -115,7 +115,7 @@ var com7 = {
 };
 
 var city = function (period) {
-   
+
     var dataParsed = chrono.parse(period);
     if(dataParsed.length > 0){
       var dates = parseDate(dataParsed[0]);
@@ -148,7 +148,21 @@ var explainCommand = function (num) {
     var text = comDesc[num - 1];
     speechSynth(text);
 }
- 
+
+/* Functions and commands for question 10*/
+var com10 = {
+    'mis transacciones' : myTransactions
+};
+
+var myTransactions = function() {
+    var url = Routing.generate('transaction_default_get_user_transactions');
+    $.ajax({
+        url: url,
+        success: function(result) {
+            $('#result').html(result);
+        }
+    });
+}
 
 
 /*Description of commands*/
@@ -161,7 +175,8 @@ var comDesc = {
     5: 'Debes decir: compara gastos, seguio de la categoría deseada, seguido del periodo de tiempo',
     6: 'Debes decir: ciudad mas veces, seguido del periodo de tiempo',
     7: 'Debes decir: refresca',
-    8: 'Debes decir: comando, seguido del número de comando deseado'
+    8: 'Debes decir: comando, seguido del número de comando deseado',
+    9: 'Debes decir: mis transacciones',
 };
 
 /*Array that contains all the commands to compare with user phrase*/
@@ -176,7 +191,8 @@ var comForDif = [
     'compara gastos *cat periodo *period',
     'ciudad más veces *period',
     'Refresca',
-    'comando :num'
+    'comando :num',
+    'mis transacciones'
 ];
 
 /* ######################################################################*/
@@ -227,7 +243,7 @@ function parseDate(period){
 /*Returns a date with the following format:
     day/month/year*/
 function dateToVec(date){
-   
+
     return date;
 }
 /*Levenshtein algorithm*/
@@ -315,6 +331,7 @@ function addAnnyangCommands(){
     annyang.addCommands(com7);
     annyang.addCommands(com8);
     annyang.addCommands(com9);
+    annyang.addCommands(com10);
 }
 
 /* Init methods */
