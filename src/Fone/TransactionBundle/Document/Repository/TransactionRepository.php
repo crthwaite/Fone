@@ -13,12 +13,21 @@ use Doctrine\ODM\MongoDB\DocumentRepository;
 
 class TransactionRepository extends DocumentRepository
 {
-    public function findByAccountIds($accountIds)
+    public function findByAccountIds($accountIds, $num = null, $pager = null)
     {
-        return $this->createQueryBuilder()
+        $qb = $this->createQueryBuilder()
             ->field('account')->in($accountIds)
-            ->getQuery()
-            ->execute();
+            ->sort('operationDate', -1);
+
+        if (!is_null($num)) {
+            $qb->limit($num);
+        }
+
+        if (!is_null($pager)) {
+            $qb->skip($num * $pager);
+        }
+
+        return $qb->getQuery()->execute();
     }
 
     public function getCategoryMostSpentMonth($accountIds, $month)
