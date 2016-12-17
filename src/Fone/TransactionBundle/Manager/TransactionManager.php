@@ -14,35 +14,9 @@ class TransactionManager extends CoreManager
         return $this->getRepository()->findBy(array("id" => $id));
     }
 
-
-
-    public function findMostSpentCategoryMonth($user, $month)
+    public function findByAccountsIds($accountIds)
     {
-        $transactions = $this->getRepository()->findAll();
-        $filter = array();
-
-        /** @var Transaction $transaction */
-        foreach ($transactions as $transaction) {
-            /** @var \DateTime $date */
-            $date = $transaction->getOperationDate();
-            if ($date->format('n') == $month) {
-                if (!is_null($transaction->getPeerActivity()) && $transaction->getPeerActivity() != "") {
-                    if (array_key_exists($transaction->getPeerActivity(), $filter)) {
-                        $filter[$transaction->getPeerActivity()] += $transaction->getAmount();
-                    } else {
-                        $filter[$transaction->getPeerActivity()] = $transaction->getAmount();
-                    }
-                }
-            }
-        }
-
-        $filter = asort($filter);
-
-        return $filter;
-    }
-
-    public function findByUser($user) {
-        return $this->getRepository()->findByUser($user);
+        return $this->getRepository()->findByAccountIds($accountIds);
     }
 
     /** @return TransactionRepository */

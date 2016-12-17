@@ -1,0 +1,5 @@
+<h1>Number of transactions: {{ transactions | length }}</h1>
+
+{% for transaction in transactions %}
+    <h4>{{ transaction.id }}</h4>
+{% endfor %}

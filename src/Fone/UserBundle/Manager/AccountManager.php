@@ -15,7 +15,7 @@ class AccountManager extends CoreManager
 {
     public function findByUser($user)
     {
-        return $this->getRepository()->findBy(array('user' => $user));
+        return $this->getRepository()->findByUser($user);
     }
 
     /** @return AccountRepository */

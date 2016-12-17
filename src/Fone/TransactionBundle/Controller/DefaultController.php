@@ -4,6 +4,7 @@ namespace Fone\TransactionBundle\Controller;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Fone\TransactionBundle\Manager\TransactionManager;
+use Fone\UserBundle\Document\Account;
 use Fone\UserBundle\Manager\AccountManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,7 +38,6 @@ class DefaultController extends Controller
     /**
      * @Route("/user/transactions", name="transaction_default_get_user_transactions")
      *
-     * @Template()
      * @return array
      */
     public function getUserTransactionsAction()
@@ -45,8 +45,19 @@ class DefaultController extends Controller
         $user = $this->getUser();
         $am = $this->getAccountManager();
         $accounts = $am->findByUser($user);
+        $accountIds = array();
+        /** @var Account $account */
+        foreach ($accounts as $account)
+        {
+            $accountIds[] = $account->getId();
+        }
+        $tm = $this->getTransactionManager();
+        $transactions = $tm->findByAccountsIds($accountIds);
 
-        return array('accounts' => $accounts);
+
+        return $this->render('TransactionBundle:Default:getUserTransactions.html.twig', array(
+            'transactions' => $transactions
+        ));
 
     }
 
