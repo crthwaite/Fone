@@ -1,0 +1,10 @@
+parameters:
+  user.account.class: Fone\UserBundle\Manager\AccountManager
+  user.account.entity_class: Fone\UserBundle\Document\Account
+
+services:
+  user.account_manager:
+    class: "%user.account.class%"
+    arguments: [ "%user.account.entity_class%" ]
+    parent: core.core_manager
+

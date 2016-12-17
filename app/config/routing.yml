@@ -1,16 +1,17 @@
-main_page:
-    resource: "@MainPageBundle/Resources/config/routing.yml"
+default:
+    resource: "@CoreBundle/Controller"
+    type:     annotation
     prefix:   /
 
-app:
-    resource: "@AppBundle/Controller/"
+main_page:
+    resource: "@MainPageBundle/Controller"
     type:     annotation
+    prefix:   /portal/
 
 transaction:
     resource: "@TransactionBundle/Controller/DefaultController.php"
     type:     annotation
     prefix:   /transactions/
 
-main:
-    path: /
-    defaults: {_controller: MainPageBundle:Default:main }
+fos_user:
+    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
