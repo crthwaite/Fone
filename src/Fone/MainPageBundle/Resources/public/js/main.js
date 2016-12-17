@@ -151,11 +151,11 @@ var explainCommand = function (num) {
 
 /* Functions and commands for question 10*/
 var com10 = {
-    'mis transacciones' : myTransactions
+    'mis :num últimas transacciones' : myTransactions
 };
 
-var myTransactions = function() {
-    var url = Routing.generate('transaction_default_get_user_transactions');
+var myTransactions = function(num) {
+    var url = Routing.generate('transaction_default_get_user_transactions', {"num" : parseInt(num)});
     $.ajax({
         url: url,
         success: function(result) {
@@ -192,7 +192,7 @@ var comForDif = [
     'ciudad más veces *period',
     'Refresca',
     'comando :num',
-    'mis transacciones'
+    'mis :num últimas transacciones'
 ];
 
 /* ######################################################################*/

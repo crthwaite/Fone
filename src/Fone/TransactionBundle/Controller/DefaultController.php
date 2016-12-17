@@ -15,6 +15,30 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 class DefaultController extends Controller
 {
     /**
+     * @param $num integer | null
+     * @param $pager integer | null
+     *
+     * @Route("/user/transactions/{num}/{pager}", name="transaction_default_get_user_transactions", options={"expose"=true})
+     * @Method({"POST", "GET"})
+     *
+     * @return array
+     */
+    public function getUserTransactionsAction($num = null, $pager = null)
+    {
+        $user = $this->getUser();
+        $accountIds = $this->_getAccountIds($user);
+
+        $tm = $this->getTransactionManager();
+
+        $transactions = $tm->findByAccountsIds($accountIds, $num, $pager);
+
+
+        return $this->render('TransactionBundle:Default:getUserTransactions.html.twig', array(
+            'transactions' => $transactions
+        ));
+    }
+
+    /**
      * @param string $month
      *
      * @Route(
@@ -36,25 +60,6 @@ class DefaultController extends Controller
         $result = $tm->findCategoryMostSpentMonth($accountIds, $month);
 
         return array('result' => $result);
-    }
-
-    /**
-     * @Route("/user/transactions", name="transaction_default_get_user_transactions", options={"expose"=true})
-     * @Method({"POST", "GET"})
-     * @return array
-     */
-    public function getUserTransactionsAction(Request $request)
-    {
-        $user = $this->getUser();
-        $accountIds = $this->_getAccountIds($user);
-
-        $tm = $this->getTransactionManager();
-        $transactions = $tm->findByAccountsIds($accountIds);
-
-
-        return $this->render('TransactionBundle:Default:getUserTransactions.html.twig', array(
-            'transactions' => $transactions
-        ));
     }
 
     private function getNumericMonth($month)

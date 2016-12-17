@@ -14,9 +14,9 @@ class TransactionManager extends CoreManager
         return $this->getRepository()->findBy(array("id" => $id));
     }
 
-    public function findByAccountsIds($accountIds)
+    public function findByAccountsIds($accountIds, $num = null, $pager = null)
     {
-        return $this->getRepository()->findByAccountIds($accountIds);
+        return $this->getRepository()->findByAccountIds($accountIds, $num, $pager);
     }
 
     public function findCategoryMostSpentMonth($accountIds, $month)
