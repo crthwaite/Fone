@@ -58,8 +58,9 @@ class DefaultController extends Controller
 
         $tm = $this->getTransactionManager();
         $result = $tm->findCategoryMostSpentMonth($accountIds, $month);
+        reset($result);
 
-        return array('result' => $result);
+        return array('key' => key($result), 'result' => $result[key($result)]);
     }
 
     private function getNumericMonth($month)

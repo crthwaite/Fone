@@ -16,7 +16,8 @@ class TransactionRepository extends DocumentRepository
     public function findByAccountIds($accountIds, $num = null, $pager = null)
     {
         $qb = $this->createQueryBuilder()
-            ->field('account')->in($accountIds);
+            ->field('account')->in($accountIds)
+            ->sort('operationDate', -1);
 
         if (!is_null($num)) {
             $qb->limit($num);
