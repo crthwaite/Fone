@@ -11,7 +11,7 @@ for document in cursor:
     day = date.day
     month = date.month
     year = date.year
-    db.Transaction.update_one(
+    db.Transaction.update(
         {"_id": document['_id']},
         {
             "$set": {

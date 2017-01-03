@@ -15,7 +15,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 class DefaultController extends Controller
 {
     /**
-     * @param $num integer | null
+     * @param $num   integer | null
      * @param $pager integer | null
      *
      * @Route("/user/transactions/{num}/{pager}", name="transaction_default_get_user_transactions", options={"expose"=true})
@@ -25,7 +25,7 @@ class DefaultController extends Controller
      */
     public function getUserTransactionsAction($num = null, $pager = null)
     {
-        $user = $this->getUser();
+        $user       = $this->getUser();
         $accountIds = $this->_getAccountIds($user);
 
         $tm = $this->getTransactionManager();
@@ -51,22 +51,53 @@ class DefaultController extends Controller
      */
     public function spentMostCategoryMonthAction($month)
     {
-        $user = $this->getUser();
+        $user       = $this->getUser();
         $accountIds = $this->_getAccountIds($user);
 
         $month = $this->getNumericMonth($month);
 
-        $tm = $this->getTransactionManager();
+        $tm     = $this->getTransactionManager();
         $result = $tm->findCategoryMostSpentMonth($accountIds, $month);
         reset($result);
 
         return array('key' => key($result), 'result' => $result[key($result)]);
     }
 
+    /**
+     * @param string $category
+     * @param string $day
+     * @param string $month
+     * @param string|null $year
+     * @Route(
+     *     "/spent/category/date/{category}/{day}/{month}/{year}",
+     *     name="transaction_default_spent_category_date",
+     *     options={"expose": true}
+     * )
+     * @Template()
+     *
+     * @return array
+     */
+    public function spentCategoryDateAction($category, $day, $month, $year = null)
+    {
+        $user       = $this->getUser();
+        $accountIds = $this->_getAccountIds($user);
+
+        $tm    = $this->getTransactionManager();
+        $spent = $tm->findSpentCategoryDate($accountIds, $category, intval($day), intval($month), intval($year));
+
+        return array(
+            "category" => $category,
+            "day"      => $day,
+            "month"    => $month,
+            "year"     => $year,
+            "spent"    => $spent
+        );
+    }
+
     private function getNumericMonth($month)
     {
         $month = strtolower(trim($month));
-        $num = 0;
+        $num   = 0;
 
         switch ($month) {
             case 'enero':
@@ -112,12 +143,11 @@ class DefaultController extends Controller
 
     private function _getAccountIds($user)
     {
-        $am = $this->getAccountManager();
-        $accounts = $am->findByUser($user);
+        $am         = $this->getAccountManager();
+        $accounts   = $am->findByUser($user);
         $accountIds = array();
         /** @var Account $account */
-        foreach ($accounts as $account)
-        {
+        foreach ($accounts as $account) {
             $accountIds[] = $account->getId();
         }
 

@@ -42,6 +42,29 @@ class TransactionManager extends CoreManager
         return $category;
     }
 
+    public function findSpentCategoryDate($accountIds, $category, $day, $month, $year)
+    {
+        if (is_null($year)) {
+            $transactions = $this->getRepository()->getSpentCategoryDate($accountIds, $category, $day, $month);
+        } else {
+            $transactions = $this->getRepository()->getSpentCategoryFullDate(
+                $accountIds,
+                $category,
+                $day,
+                $month,
+                $year
+            );
+        }
+
+        $spent = 0.0;
+        /** @var Transaction $transaction */
+        foreach ($transactions as $transaction) {
+            $spent += $transaction->getAmount();
+        }
+
+        return $spent;
+    }
+
     /** @return TransactionRepository */
     protected function getRepository()
     {

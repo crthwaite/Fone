@@ -30,6 +30,29 @@ class TransactionRepository extends DocumentRepository
         return $qb->getQuery()->execute();
     }
 
+    public function getSpentCategoryDate($accountIds, $category, $day, $month)
+    {
+        return $this->createQueryBuilder()
+            ->field('account')->in($accountIds)
+            ->field('peerActivity')->equals($category)
+            ->field('operationDay')->equals($day)
+            ->field('operationMonth')->equals($month)
+            ->getQuery()
+            ->execute();
+    }
+
+    public function getSpentCategoryFullDate($accountIds, $category, $day, $month, $year)
+    {
+        return $this->createQueryBuilder()
+            ->field('account')->in($accountIds)
+            ->field('peerActivity')->equals($category)
+            ->field('operationDay')->equals($day)
+            ->field('operationMonth')->equals($month)
+            ->field('operationYear')->equals($year)
+            ->getQuery()
+            ->execute();
+    }
+
     public function getCategoryMostSpentMonth($accountIds, $month)
     {
         return $this->createQueryBuilder()
