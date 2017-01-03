@@ -30,6 +30,15 @@ class TransactionRepository extends DocumentRepository
         return $qb->getQuery()->execute();
     }
 
+    public function getSpentCategory($accountIds, $category)
+    {
+        return $this->createQueryBuilder()
+            ->field('account')->in($accountIds)
+            ->field('peerActivity')->equals($category)
+            ->getQuery()
+            ->execute();
+    }
+
     public function getSpentCategoryDate($accountIds, $category, $day, $month)
     {
         return $this->createQueryBuilder()

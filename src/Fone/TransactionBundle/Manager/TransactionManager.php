@@ -42,6 +42,19 @@ class TransactionManager extends CoreManager
         return $category;
     }
 
+    public function findSpentCategory($accountIds, $category)
+    {
+        $transactions = $this->getRepository()->getSpentCategory($accountIds, $category);
+
+        $spent = 0.0;
+        /** @var Transaction $transaction */
+        foreach ($transactions as $transaction) {
+            $spent += $transaction->getAmount();
+        }
+
+        return $spent;
+    }
+
     public function findSpentCategoryDate($accountIds, $category, $day, $month, $year)
     {
         if (is_null($year)) {

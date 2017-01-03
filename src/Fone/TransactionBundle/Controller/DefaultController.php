@@ -64,6 +64,25 @@ class DefaultController extends Controller
     }
 
     /**
+     * @param $category
+     * @Route("/spent/in-category/{category}", name="transaction_default_spent_incategory", options={"expose": true})
+     *
+     * @Template()
+     *
+     * @return array
+     */
+    public function spentCategoryAction($category)
+    {
+        $user       = $this->getUser();
+        $accountIds = $this->_getAccountIds($user);
+
+        $tm     = $this->getTransactionManager();
+        $spent = $tm->findSpentCategory($accountIds, $category);
+
+        return array('category' => $category, 'spent' => $spent);
+    }
+
+    /**
      * @param string $category
      * @param string $day
      * @param string $month
