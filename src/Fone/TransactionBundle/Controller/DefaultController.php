@@ -83,6 +83,37 @@ class DefaultController extends Controller
     }
 
     /**
+     * @param string $day
+     * @param string $month
+     * @param string|null $year
+     *
+     * @Route(
+     *     "/spent/on-date/{day}/{month}/{year}",
+     *      name="transaction_default_spent_incategory",
+     *      options={"expose": true}
+     * )
+     *
+     * @Template()
+     *
+     * @return array
+     */
+    public function spentDateAction($day, $month, $year = null)
+    {
+        $user       = $this->getUser();
+        $accountIds = $this->_getAccountIds($user);
+
+        $tm     = $this->getTransactionManager();
+        $spent = $tm->findSpentDate(
+            $accountIds,
+            intval($day),
+            intval($month),
+            (is_null($year)) ? null : intval($year)
+        );
+
+        return array("spent" => $spent, "day" => $day, "month" => $month, "year" => $year);
+    }
+
+    /**
      * @param string $category
      * @param string $day
      * @param string $month
@@ -102,7 +133,13 @@ class DefaultController extends Controller
         $accountIds = $this->_getAccountIds($user);
 
         $tm    = $this->getTransactionManager();
-        $spent = $tm->findSpentCategoryDate($accountIds, $category, intval($day), intval($month), intval($year));
+        $spent = $tm->findSpentCategoryDate(
+            $accountIds,
+            $category,
+            intval($day),
+            intval($month),
+            (is_null($year)) ? null : intval($year)
+        );
 
         return array(
             "category" => $category,
