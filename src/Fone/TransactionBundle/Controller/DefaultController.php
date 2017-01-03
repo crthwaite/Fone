@@ -39,6 +39,45 @@ class DefaultController extends Controller
     }
 
     /**
+     * @param string $category
+     * @param string $day
+     * @param string $month
+     * @param string|null $year
+     * @param string|null $num
+     * @param string|null $pager
+     *
+     * @Route(
+     *     "/user/transactions/category/date/{category}/{date}/{day}/{month}/{year}/{num}/{pager}",
+     *      name="transaction_default_get_user_transactions_category_date",
+     *      options={"expose"=true}
+ *     )
+     */
+    public function getTransactionsCategoryDateAction(
+        $category,
+        $day,
+        $month,
+        $year = null,
+        $num = null,
+        $pager = null
+    ) {
+        $user       = $this->getUser();
+        $accountIds = $this->_getAccountIds($user);
+
+        $tm = $this->getTransactionManager();
+        $transactions = $tm->findTransactionsCategoryDate(
+            $accountIds,
+            $category,
+            intval($day),
+            intval($month),
+            (is_null($year)) ? null : intval($year),
+            $num,
+            $pager
+        );
+
+        return array("transactions" => $transactions);
+    }
+
+    /**
      * @param string $month
      *
      * @Route(

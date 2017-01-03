@@ -30,57 +30,98 @@ class TransactionRepository extends DocumentRepository
         return $qb->getQuery()->execute();
     }
 
-    public function getSpentDate($accountIds, $day, $month)
+    public function getSpentDate($accountIds, $day, $month, $num = null, $pager = null)
     {
-        return $this->createQueryBuilder()
+        $qb = $this->createQueryBuilder()
+            ->field('account')->in($accountIds)
+            ->field('operationDay')->equals($day)
+            ->field('operationMonth')->equals($month);
+
+        if (!is_null($num)) {
+            $qb->limit($num);
+        }
+
+        if (!is_null($pager)) {
+            $qb->skip($num * $pager);
+        }
+
+        return $qb->getQuery()->execute();
+    }
+
+    public function getSpentFullDate($accountIds, $day, $month, $year, $num = null, $pager = null)
+    {
+        $qb = $this->createQueryBuilder()
             ->field('account')->in($accountIds)
             ->field('operationDay')->equals($day)
             ->field('operationMonth')->equals($month)
-            ->getQuery()
-            ->execute();
+            ->field('operationYear')->equals($year);
+
+        if (!is_null($num)) {
+            $qb->limit($num);
+        }
+
+        if (!is_null($pager)) {
+            $qb->skip($num * $pager);
+        }
+
+        return $qb->getQuery()->execute();
     }
 
-    public function getSpentFullDate($accountIds, $day, $month, $year)
+    public function getSpentCategory($accountIds, $category, $num = null, $pager = null)
     {
-        return $this->createQueryBuilder()
+        $qb = $this->createQueryBuilder()
             ->field('account')->in($accountIds)
-            ->field('operationDay')->equals($day)
-            ->field('operationMonth')->equals($month)
-            ->field('operationYear')->equals($year)
-            ->getQuery()
-            ->execute();
+            ->field('peerActivity')->equals($category);
+
+        if (!is_null($num)) {
+            $qb->limit($num);
+        }
+
+        if (!is_null($pager)) {
+            $qb->skip($num * $pager);
+        }
+
+        return $qb->getQuery()->execute();
+
     }
 
-    public function getSpentCategory($accountIds, $category)
+    public function getSpentCategoryDate($accountIds, $category, $day, $month, $num = null, $pager = null)
     {
-        return $this->createQueryBuilder()
+        $qb = $this->createQueryBuilder()
             ->field('account')->in($accountIds)
             ->field('peerActivity')->equals($category)
-            ->getQuery()
-            ->execute();
+            ->field('operationDay')->equals($day)
+            ->field('operationMonth')->equals($month);
+
+        if (!is_null($num)) {
+            $qb->limit($num);
+        }
+
+        if (!is_null($pager)) {
+            $qb->skip($num * $pager);
+        }
+
+        return $qb->getQuery()->execute();
     }
 
-    public function getSpentCategoryDate($accountIds, $category, $day, $month)
+    public function getSpentCategoryFullDate($accountIds, $category, $day, $month, $year, $num = null, $pager = null)
     {
-        return $this->createQueryBuilder()
+        $qb = $this->createQueryBuilder()
             ->field('account')->in($accountIds)
             ->field('peerActivity')->equals($category)
             ->field('operationDay')->equals($day)
             ->field('operationMonth')->equals($month)
-            ->getQuery()
-            ->execute();
-    }
+            ->field('operationYear')->equals($year);
 
-    public function getSpentCategoryFullDate($accountIds, $category, $day, $month, $year)
-    {
-        return $this->createQueryBuilder()
-            ->field('account')->in($accountIds)
-            ->field('peerActivity')->equals($category)
-            ->field('operationDay')->equals($day)
-            ->field('operationMonth')->equals($month)
-            ->field('operationYear')->equals($year)
-            ->getQuery()
-            ->execute();
+        if (!is_null($num)) {
+            $qb->limit($num);
+        }
+
+        if (!is_null($pager)) {
+            $qb->skip($num * $pager);
+        }
+
+        return $qb->getQuery()->execute();
     }
 
     public function getCategoryMostSpentMonth($accountIds, $month)
