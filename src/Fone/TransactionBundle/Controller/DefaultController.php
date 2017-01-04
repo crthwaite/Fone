@@ -95,9 +95,11 @@ class DefaultController extends Controller
         $accountIds = $this->_getAccountIds($user);
 
         $month = $this->getNumericMonth($month);
-
+        die(var_dump($month));
         $tm     = $this->getTransactionManager();
         $result = $tm->findCategoryMostSpentMonth($accountIds, $month);
+
+        die(var_dump($result));
         reset($result);
 
         return array('key' => key($result), 'result' => $result[key($result)]);
@@ -129,7 +131,7 @@ class DefaultController extends Controller
      *
      * @Route(
      *     "/spent/on-date/{day}/{month}/{year}",
-     *      name="transaction_default_spent_incategory",
+     *      name="transaction_default_spent_ondate",
      *      options={"expose": true}
      * )
      *
