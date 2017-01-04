@@ -47,10 +47,11 @@ class DefaultController extends Controller
      * @param string|null $pager
      *
      * @Route(
-     *     "/user/transactions/category/date/{category}/{date}/{day}/{month}/{year}/{num}/{pager}",
+     *     "/user/transactions/category/date/{category}/{day}/{month}/{year}/{num}/{pager}",
      *      name="transaction_default_get_user_transactions_category_date",
      *      options={"expose"=true}
  *     )
+     * @template()
      */
     public function getTransactionsCategoryDateAction(
         $category,

@@ -1,14 +1,52 @@
 
+/* ##################### Annyang variales ####################### */
+
+var pager = 0;
+var numTrans = 0;
+function moreTransactions() {
+    var url = Routing.generate('transaction_default_get_user_transactions', {"num" : parseInt(numTrans),"pager": parseInt(pager)});
+    console.log(url);
+    $.ajax({
+        url: url,
+        success: function(result) {
+            $('#result').html(result);
+            var $headerRow = $("#result table tbody tr:first-child");
+            var $result = $('#result table tbody tr');
+            var j = 0;
+            $result.each(function() {
+                if (j != 0){
+                    for(var i = 1; i<= 2; ++i){
+                        speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
+                        speechSynth($(this).find('td:nth-child(' + i + ')').text());
+                    }
+                    var money = parseFloat( $(this).find('td:nth-child(' + 3 + ')').text() );
+                    if (parseFloat( money ) >= 0){
+                        speechSynth("Ingreso de: " + Math.abs(money) + "euros");
+                    } else {
+                        speechSynth("Gasto de: " + Math.abs(money) + "euros" );
+                    }
+                }
+                j++;
+            });
+        }
+    });
+    speechSynth("Quieres mas Transacciones?");
+    //addCommand(moreOrNot);
+
+}
+
+/*#######################################################*/
+
 /* ######## Command Function and Methods ########*/
 
 
 var com1 = {
-    'hola': wH
+    'Saluda': greet
 };
 
-var wH = function () {
-    $('#result').text("Bienvenido!");
-    speechSynth("Bienvenido!");
+var greet = function () {
+    var index = Math.floor((Math.random() * greetings.length));
+    speechSynth(greetings[index]);
 };
 
 
@@ -28,7 +66,7 @@ var say = function (text) {
 
  /*Functions and commands for question 3*/
 var com3 = {
-    'gastado en *category periodo *period': catSpend
+    'transacciones en *category periodo *period': catSpend
 };
 
 var catSpend = function (category,period) {
@@ -37,32 +75,47 @@ var catSpend = function (category,period) {
     if(dataParsed.length > 0){
          /*Pass parameters to back-end*/
         var dates = parseDate(dataParsed[0]);
-        console.log(dates[0]);
-        $('#result').text("Tu categoría es: " + category + " y el periodo dicho es: " + period);
-        speechSynth("Tu categoría es: " + category + ",y el periodo dicho es: " + period);
+        var url = Routing.generate('transaction_default_get_user_transactions_category_date', 
+            {"category" : category,"day": 1, "month": 1, "year": 2014, "num": 5, "pager": 0 });
+       console.log(url);
+        /*$.ajax({
+        url: url,
+        success: function(result) {
+            $('#result').html(result);
+            var $headerRow = $("#result table tbody tr:first-child");
+            var $result = $('#result table tbody tr');
+            var j = 0;
+            $result.each(function() {
+                if (j != 0){
+                    for(var i = 1; i<= 3; ++i){
+                        speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
+                        speechSynth($(this).find('td:nth-child(' + i + ')').text());
+                    }
+                }
+                j++;
+            });
+            speechSynth("¿Quieres mas Transacciones?");
+            annyang.addCommands(moreOrNot);
+            //console.log('hola');
+        }
+    }); */
+
     } else speechSynth('Periodo de tiempo incorrecto');
 
 
 };
+
 
 
 /*Functions and commands for question 4*/
 
 var com4 = {
-    'categoría más dinero periodo *period' : sOver
+    'gastado en *category' : sOver
 };
 
-var sOver = function (period) {
-
-    var dataParsed = chrono.parse(period);
-    console.log(dataParsed);
-    if(dataParsed.length > 0){
-        /*Pass parameters to back-end*/
-        var dates = parseDate(dataParsed[0]);
-         console.log(dates[0]);
-        $('#result').text("Tu periodo es: " + period);
-        speechSynth("Tu periodo es: " + period);
-    } else speechSynth('Periodo de tiempo incorrecto');
+var sOver = function (category) {
+     var url = Routing.generate('transaction_default_spent_incategory', {"category" : category});
+     console.log(url);
 
 };
 
@@ -151,11 +204,14 @@ var explainCommand = function (num) {
 
 /* Functions and commands for question 10*/
 var com10 = {
-    'mis :num últimas transacciones' : myTransactions
+    'últimas :num transacciones'  : myTransactions
 };
 
+
 var myTransactions = function(num) {
-    var url = Routing.generate('transaction_default_get_user_transactions', {"num" : parseInt(num)});
+    var url = Routing.generate('transaction_default_get_user_transactions', {"num" : parseInt(num),"pager": parseInt(pager)});
+    console.log(url);
+    numTrans = parseInt(num);
     $.ajax({
         url: url,
         success: function(result) {
@@ -165,18 +221,95 @@ var myTransactions = function(num) {
             var j = 0;
             $result.each(function() {
                 if (j != 0){
-                    for(var i = 1; i<= 3; ++i){
+                    for(var i = 1; i<= 2; ++i){
                         speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                         speechSynth($(this).find('td:nth-child(' + i + ')').text());
                     }
+
+                    //speechSynth($headerRow.find('th:nth-child(' + 3 + ')').text());
+                    var money = parseFloat( $(this).find('td:nth-child(' + 3 + ')').text() );
+                    if (parseFloat( money ) >= 0){
+                        speechSynth("Ingreso de: " + Math.abs(money) + "euros");
+                    } else {
+                        speechSynth("Gasto de: " + Math.abs(money) + "euros" );
+                    }
+
+
                 }
                 j++;
             });
+            speechSynth("¿Quieres mas Transacciones?");
+            annyang.addCommands(moreOrNot);
+            //console.log('hola');
+        }
+    });
+   
+}
 
+var com10unique = {
+    'última transacción': myTransaction
+};
+
+var myTransaction = function() {
+     var url = Routing.generate('transaction_default_get_user_transactions', {"num" : parseInt(1),"pager": parseInt(pager)});
+    console.log(url);
+    numTrans = parseInt(1);
+    $.ajax({
+        url: url,
+        success: function(result) {
+            $('#result').html(result);
+            var $headerRow = $("#result table tbody tr:first-child");
+            var $result = $('#result table tbody tr');
+            var j = 0;
+            $result.each(function() {
+                if (j != 0){
+                    for(var i = 1; i<= 2; ++i){
+                        speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
+                        speechSynth($(this).find('td:nth-child(' + i + ')').text());
+                    }
+
+                    //speechSynth($headerRow.find('th:nth-child(' + 3 + ')').text());
+                    var money = parseFloat( $(this).find('td:nth-child(' + 3 + ')').text() );
+                    if (parseFloat( money ) >= 0){
+                        speechSynth("Ingreso de: " + Math.abs(money) + "euros");
+                    } else {
+                        speechSynth("Gasto de: " + Math.abs(money) + "euros" );
+                    }
+
+
+                }
+                j++;
+            });
+            speechSynth("¿Quieres mas Transacciones?");
+            annyang.addCommands(moreOrNot);
+            //console.log('hola');
         }
     });
 }
+var moreOrNot = {
+    ':res por favor': moreOrNotMethod
+}
 
+var moreOrNotMethod = function(res){
+    if (res == 'sí') {
+        ++pager;
+        moreTransactions();
+
+    } else if (res == 'no') {
+        pager = 0;
+        numTrans = 0;
+        annyang.removeCommands(moreOrNot);
+    }
+}
+
+
+var comStop = {
+    'para': stopAnnyang
+};
+
+var stopAnnyang = function() {
+    annyang.pause();
+}
 
 /*Description of commands*/
 var comDesc = {
@@ -190,6 +323,7 @@ var comDesc = {
     7: 'Debes decir: refresca',
     8: 'Debes decir: comando, seguido del número de comando deseado',
     9: 'Debes decir: mis transacciones',
+    10: 'Debes decir: última transacción'
 };
 
 /*Array that contains all the commands to compare with user phrase*/
@@ -205,8 +339,10 @@ var comForDif = [
     'ciudad más veces *period',
     'Refresca',
     'comando :num',
-    'mis :num últimas transacciones'
+    ' últimas :num transacciones',
+    'última transacción'
 ];
+
 
 /* ######################################################################*/
 
@@ -218,6 +354,13 @@ function speechSynth(text) {
     var utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'es-ES';
     synth.speak(utterance);
+}
+
+function speechCommand(text){
+    var utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'es-ES';
+    synth.speak(utterance);
+    synth.speak('¿Algo mas?');
 }
 /* ######################################################################*/
 
@@ -311,7 +454,7 @@ function minimumCommandDifference(user,th) {
     var imin = -1;
     for( var i = 0; i < comForDif.length; i++){
         var distance = LevenshteinDistance(user[0],comForDif[i]);
-        console.log(distance);
+       
         if (distance < min ){
             min = distance;
             imin = i;
@@ -324,13 +467,19 @@ function minimumCommandDifference(user,th) {
 
 /* ######################################################################*/
 
-
 /* ######## Init methods ################################################*/
 
 
 /*Variables*/
 var ready = 0;
 var synth = window.speechSynthesis;
+var pressed = 0;
+
+var greetings = [
+"Sea usted bienvenido!",
+"Hola, bienvenido a Foné!",
+"Muy buenas!"
+];
 
 /*Descripcion of the commands that sytem has to say to the user*/
 
@@ -345,7 +494,12 @@ function addAnnyangCommands(){
     annyang.addCommands(com8);
     annyang.addCommands(com9);
     annyang.addCommands(com10);
+    annyang.addCommands(com10unique);
+    annyang.addCommands(comStop);
 }
+
+
+ 
 
 /* Init methods */
 function startAnnyang(){
@@ -354,43 +508,39 @@ function startAnnyang(){
         annyang.setLanguage('es-ES');
         annyang.start();
         annyang.debug();
-        speechSynth('Reconocimiento activado!');
         annyang.addCallback('resultNoMatch', function(userSaid, commandText, phrases) {
-            var diff = minimumCommandDifference(userSaid,30);
+            var diff = minimumCommandDifference(userSaid,6);
             if(diff === -1)  speechSynth('No hemos encontrado ningún comando parecido a tu pregunta: puedes usar el comando 9 para comprender los comandos!');
-            else speechSynth('Quizàs te refieres al comando: ' + diff);
+            else speechSynth('Quizás te refieres al comando: ' + diff);
 
         });
     }
 }
 
-function addCommandsDescription() {
-    $('#commands').append('<li>hola</li>');
-    $('#commands').append('<li> dime [frase] </li>');
-    $('#commands').append('<li> gastado en [categoria] periodo [periodo deseado] </li>');
-    $('#commands').append('<li> categoría mas dinero periodo [periodo deseado] </li>');
-    $('#commands').append('<li> mejor [sitio] periodo [periodo deseado] </li>');
-    $('#commands').append('<li> Compara gastos  [categoria] periodo [periodo deseado] </li>');
-    $('#commands').append('<li> ciudad mas veces [periodo deseado] </li>');
-    $('#commands').append('<li> Refresca </li>');
-    $('#commands').append('<li> comando [numero] </li>');
-    $("#commands > li").addClass("w3-hover-pale-green");
-}
 
 $(document).ready(function() {
     if (ready < 1) {
-        speechSynth('Bienvenido!');
-        speechSynth('Pulsa enter o espacio para iniciar la aplicación.');
-        var pressed = 0;
-        $("body").keypress(function () {
-            synth.cancel();
+        var index = Math.floor((Math.random() * greetings.length));
+        speechSynth(greetings[index]);
+        speechSynth('Pulsa una tecla para iniciar!.');
+        ready = 1;
+
+        $("body").keypress(function (e) {
+            var code = e.keyCode || e.which;
+            console.log(e);
+            if(code == 97) { //Enter keycode
+                //Do something
+                synth.cancel();
+            }
+            if (code == 114){
+                annyang.resume()
+            }
+            
             if (pressed == 0) {
-                addCommandsDescription();
                 startAnnyang();
                 pressed = 1;
             }
         });
-        ready = 1;
     }
 });
 
