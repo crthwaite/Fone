@@ -95,11 +95,8 @@ class DefaultController extends Controller
         $accountIds = $this->_getAccountIds($user);
 
         $month = $this->getNumericMonth($month);
-        die(var_dump($month));
         $tm     = $this->getTransactionManager();
         $result = $tm->findCategoryMostSpentMonth($accountIds, $month);
-
-        die(var_dump($result));
         reset($result);
 
         return array('key' => key($result), 'result' => $result[key($result)]);
