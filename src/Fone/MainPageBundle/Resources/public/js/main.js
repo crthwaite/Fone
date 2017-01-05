@@ -22,7 +22,9 @@ function moreTransactions() {
                     var money = parseFloat( $(this).find('td:nth-child(' + 3 + ')').text() );
                     if (parseFloat( money ) >= 0){
                         speechSynth("Ingreso de: " + Math.abs(money) + "euros");
-                    } else {
+                    } else if(money == 0) { speechSynth("No has gastado nada en: " + category); } 
+                    
+                    else {
                         speechSynth("Gasto de: " + Math.abs(money) + "euros" );
                     }
                 }
@@ -114,9 +116,22 @@ var com4 = {
 };
 
 var sOver = function (category) {
-     var url = Routing.generate('transaction_default_spent_incategory', {"category" : category});
-     console.log(url);
+     var url = Routing.generate('transaction_default_spent_incategory', {"category" : category.toUpperCase()});
+     $.ajax({
+        url: url,
+        success: function(result) {
+            $('#result').html(result);
+            var money = parseFloat( $("#spent").text()  );
+             if (parseFloat( money ) > 0){
+                speechSynth("Ingreso de: " + Math.abs(money) + "euros");
+             } 
+             else if(money == 0) { speechSynth("No has gastado nada en: " + category); }
+             else {
+                speechSynth("Gasto de: " + Math.abs(money) + "euros" );
+             }
 
+        }
+    });
 };
 
 
