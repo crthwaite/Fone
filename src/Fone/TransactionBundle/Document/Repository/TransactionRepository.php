@@ -132,4 +132,13 @@ class TransactionRepository extends DocumentRepository
             ->getQuery()
             ->execute();
     }
+
+    public function getCityMostVisited($accountIds)
+    {
+        return $this->createQueryBuilder()
+            ->field('account')->in($accountIds)
+            ->group('peerCity')
+            ->getQuery()
+            ->execute();
+    }
 }

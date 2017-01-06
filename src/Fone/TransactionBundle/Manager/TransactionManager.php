@@ -240,6 +240,28 @@ class TransactionManager extends CoreManager
         return $spent;
     }
 
+    public function findCityMostVisited($accountIds) {
+        $transactions = $this->getRepository()->findByAccountIds($accountIds);
+
+        $cities = array();
+
+        /** @var Transaction $transaction */
+        foreach ($transactions as $transaction) {
+            /** @var \DateTime $date */
+            $city = $transaction->getCity();
+
+            if (isset($cities[$city])) {
+                $cities[$city] += 1;
+            } else {
+                $cities[$city] = 1;
+            }
+        }
+
+        asort($cities);
+
+        return $cities;
+    }
+
     /** @return TransactionRepository */
     protected function getRepository()
     {

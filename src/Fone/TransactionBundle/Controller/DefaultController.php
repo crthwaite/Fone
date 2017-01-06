@@ -343,6 +343,31 @@ class DefaultController extends Controller
         );
     }
 
+     /**
+     * @Route(
+     *     "/city/mostVisited",
+     *     name="city_most_visited",
+     *     options={"expose": true}
+     * )
+     * @Template()
+     *
+     * @return array
+     */
+    public function getCityMostVisited(){
+        $user       = $this->getUser();
+        $accountIds = $this->_getAccountIds($user);
+        $tm    = $this->getTransactionManager();
+        $result = $tm-> findCityMostVisited($accountIds);
+
+        reset($result);
+        die(var_dump($result));
+        return array('key' => key($result), 'result' => $result[key($result)]);
+    }
+
+
+
+
+
     private function getNumericMonth($month)
     {
         $month = strtolower(trim($month));

@@ -1,3 +1,88 @@
+/* ##################### FAQ ####################### */
+
+/*Questions */
+
+var faq = {
+    "que preguntas puedo hacer": "puedes saber que preguntas hacer diciendo: que preguntas puedo hacer",
+    "como reiniciar la aplicación": "para reiniciar la aplicación, puedes hacerlo diciendo: refresca",
+    "como pausar el reconocimiento de voz": "para pausar el reconocimiento, pulsa la tecla erre",
+    "como reanudar el reconocimiento de voz": "para reanudar el reconociemento puedes pulsar la tecla erre s" +
+    "i lo has pausado prèviamente",
+
+}
+/*Commands for questions*/
+function addFAQCommands() {
+    annyang.addCommands(comWhatQuestions);
+    annyang.addCommands(comHowReset);
+    annyang.addCommands(comHowReanudate);
+    annyang.addCommands(comHowPause);
+}
+var comWhatQuestions = {
+    'que preguntas puedo hacer' : whatQuestionsMethod
+}
+var whatQuestionsMethod = function () {
+    speechSynth(faq[0]);
+};
+var comHowReset = {
+    'cómo reiniciar la aplicación': howResetMethod
+};
+var howResetMethod = function () {
+    speechSynth(faq[1]);
+};
+var comHowPause = {
+    "como pausar el reconocimiento de voz": howPauseMethod
+};
+var howPauseMethod = function () {
+    speechSynth(faq[2]);
+};
+
+var comHowReanudate = {
+    "ccomo reanudar el reconocimiento de voz": howReanudateMethod
+};
+var howReanudateMethod = function () {
+    speechSynth(faq[3]);
+};
+
+/*Disponible questions commands*/
+
+var comDisponibleQuestions = {
+    'que preguntas puedo hacer': disponibleQuestionsMethod
+};
+
+var disponibleQuestionsMethod = function () {
+    speechSynth("Las preguntas disponibles són:");
+    var keys = Object.keys(questionDescription);
+    for(var i = 0; i < keys.length; ++i){
+        speechSynth('Formulación de la pregunta:');
+        speechSynth(keys[i]);
+        speechSynth('Utilidad:');
+        speechSynth(questionDescription[ keys[i] ]);
+    }
+}
+
+var questionDescription = {
+    'decir: Saluda': "El sistema te saludarà",
+    'decir la frase: gastado en: segudio de la  categoría deseada: después decir la palabra:  fecha : acto seguido decir la fecha deseada'
+        : "sirve para saber tu balance en una categoría determinada" +
+    "durante una fecha en concreto.",
+    'decir: movimientos de, seguido de la categoría deseada *category, después decir la palabra: fecha i después la fecha deseada':
+    'esta pregunta te permite saber los movimientos realizados en una categoría concreta durante la fecha indicada',
+    'decir: gastado en, después indicar la categoría deseada':
+    'Preguntando esto puedes saber el balance de las transacciones realizadas en una categoría en particular',
+    'decir: movimientos de, seguido de la categoría deseada':
+    'Te permite saber los movimientos realizados en la categoría indicada',
+    'decir: balance en la fecha, después decir la fecha deseada':
+    'este pregunta te permite saber el balance: gastos versus ingresos en la categoría indicada'
+}
+
+var arrayForDiff = [
+    'Saluda',
+    'gastado en *category en la fecha *period',
+    'movimientos de *category fecha *period',
+    'gastado en *category',
+    'movimientos de *category',
+    'balance en la fecha fecha *period' ]
+/*#######################################################*/
 
 /* ##################### Annyang variales ####################### */
 
@@ -15,9 +100,17 @@ function moreTransactions() {
             var j = 0;
             $result.each(function() {
                 if (j != 0){
+                     speechSynth("Movimiento número: " + (j) );
                     for(var i = 1; i<= 2; ++i){
-                        speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
-                        speechSynth($(this).find('td:nth-child(' + i + ')').text());
+                        if(i == 2){
+                            speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
+                             var date = $(this).find('td:nth-child(' + i + ')').text();
+                            speechSynth( date );
+                        } else {
+                            speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
+                            speechSynth($(this).find('td:nth-child(' + i + ')').text());
+                        }
+                        
                     }
                     var money = parseFloat( $(this).find('td:nth-child(' + 3 + ')').text() );
                     if (parseFloat( money ) >= 0){
@@ -52,23 +145,11 @@ var greet = function () {
 };
 
 
-/*Functions and commands for question 2*/
-
-var com2 = {
-    'dime *text': say
-};
-
-var say = function (text) {
-    $('#result').text('Has dicho: ' + text);
-    speechSynth('Has dicho: ' + text);
-    console.log(text);
-};
-
  /*Functions and commands for question 3*/
 
  /*Functions and commands for question 3*/
 var com3 = {
-    'transacciones en *category periodo *period': catSpend
+    'gastado en *category en la fecha *period': catSpend
 };
 
 var catSpend = function (category,period) {
@@ -77,10 +158,40 @@ var catSpend = function (category,period) {
     if(dataParsed.length > 0){
          /*Pass parameters to back-end*/
         var dates = parseDate(dataParsed[0]);
-        var url = Routing.generate('transaction_default_get_user_transactions_category_date', 
-            {"category" : category,"day": 1, "month": 1, "year": 2014, "num": 5, "pager": 0 });
-       console.log(url);
-        /*$.ajax({
+        console.log(dates);
+        var url = Routing.generate('transaction_default_spent_category_date', 
+            {"category" : category.toUpperCase(),"day": parseInt(dates[0][0]), "month": parseInt(dates[0][1]), "year": parseInt(dates[0][2]) });
+        
+        $.ajax({
+        url: url,
+        success: function(result) {
+            $('#result').html(result);
+            var text = $("#text").text();
+            var spent = parseFloat($("#spent").text());
+            if (parseFloat( spent ) >= 0){
+                        speechSynth("Ingreso de: " + Math.abs(spent) + "euros");
+            }
+            else if(spent == 0) { speechSynth("No has gastado nada en: " + category); }       
+            else { speechSynth("Gasto de: " + Math.abs(spent) + "euros" ); }
+        }
+
+        });
+    }
+    else speechSynth('Periodo de tiempo incorrecto');
+};
+
+var com3transactions = {
+    'transacciones de *category fecha *period' : catTransactions
+}
+
+var catTransactions = function(category,period){
+    var dataParsed = chrono.parse(period);
+    if(dataParsed.length > 0){
+        var dates = parseDate(dataParsed[0]);
+         var url = Routing.generate('transaction_default_get_user_transactions_category_date', 
+            {"category" : category.toUpperCase(),"day": parseInt(dates[0][0]), 
+            "month": parseInt(dates[0][1]), "year": parseInt(dates[0][2]) });
+         $.ajax({
         url: url,
         success: function(result) {
             $('#result').html(result);
@@ -89,33 +200,42 @@ var catSpend = function (category,period) {
             var j = 0;
             $result.each(function() {
                 if (j != 0){
-                    for(var i = 1; i<= 3; ++i){
-                        speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
-                        speechSynth($(this).find('td:nth-child(' + i + ')').text());
+                     speechSynth("Movimiento número: " + (j) );
+                    for(var i = 1; i<= 2; ++i){
+                        if(i == 2){
+                            speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
+                            var date = $(this).find('td:nth-child(' + i + ')').text();
+                            speechSynth( date );
+                        } else {
+                            speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
+                            speechSynth($(this).find('td:nth-child(' + i + ')').text());
+                        }
+                        
+                    }
+                    var money = parseFloat( $(this).find('td:nth-child(' + 3 + ')').text() );
+                    if (parseFloat( money ) >= 0){
+                        speechSynth("Ingreso de: " + Math.abs(money) + "euros");
+                    } else if(money == 0) { speechSynth("No has gastado nada en: " + category); } 
+                    
+                    else {
+                        speechSynth("Gasto de: " + Math.abs(money) + "euros" );
                     }
                 }
                 j++;
             });
-            speechSynth("¿Quieres mas Transacciones?");
-            annyang.addCommands(moreOrNot);
-            //console.log('hola');
         }
-    }); */
-
-    } else speechSynth('Periodo de tiempo incorrecto');
-
-
-};
-
-
+    });
+    } 
+    else speechSynth('Periodo de tiempo incorrecto');
+}
 
 /*Functions and commands for question 4*/
 
 var com4 = {
-    'gastado en *category' : sOver
+    'gastado en *category' : spentCat
 };
 
-var sOver = function (category) {
+var spentCat = function (category) {
      var url = Routing.generate('transaction_default_spent_incategory', {"category" : category.toUpperCase()});
      $.ajax({
         url: url,
@@ -134,6 +254,77 @@ var sOver = function (category) {
     });
 };
 
+var com4transactions = {
+    'movimientos de *category': transactionsCat
+}
+
+var transactionsCat = function(category) {
+     var url = Routing.generate('transaction_default_get_user_transactions_category', {"category" : category.toUpperCase()});
+       $.ajax({
+        url: url,
+        success: function(result) {
+            $('#result').html(result);
+            var $headerRow = $("#result table tbody tr:first-child");
+            var $result = $('#result table tbody tr');
+            var j = 0;
+            $result.each(function() {
+                if (j != 0){
+                     speechSynth("Movimiento número: " + (j) );
+                    for(var i = 1; i<= 2; ++i){
+                        if(i == 2){
+                            speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
+                            var date = $(this).find('td:nth-child(' + i + ')').text();
+                            speechSynth( date );
+                        } else {
+                            speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
+                            speechSynth($(this).find('td:nth-child(' + i + ')').text());
+                        }
+                        
+                    }
+                    var money = parseFloat( $(this).find('td:nth-child(' + 3 + ')').text() );
+                    if (parseFloat( money ) >= 0){
+                        speechSynth("Ingreso de: " + Math.abs(money) + "euros");
+                    } else if(money == 0) { speechSynth("No has gastado nada en: " + category); } 
+                    
+                    else {
+                        speechSynth("Gasto de: " + Math.abs(money) + "euros" );
+                    }
+                }
+                j++;
+            });
+        }
+    });
+}
+
+
+var comSpentDate = {
+    'balance en la fecha *period': spentDateMethod
+}
+
+var spentDateMethod = function(period){
+     
+    var dataParsed = chrono.parse(period);
+    if(dataParsed.length > 0){
+        
+        var dates = parseDate(dataParsed[0]);
+        var url = Routing.generate('transaction_default_spent_ondate',
+                  {"day" : dates[0][0], "month": dates[0][1], "year": dates[0][2]});
+        $.ajax({
+        url: url,
+        success: function(result) {
+            $('#result').html(result);
+            var text = $("#text").text();
+            var spent = parseFloat($("#spent").text());
+            if (parseFloat( spent ) >= 0){
+                        speechSynth("Ingreso de: " + Math.abs(spent) + "euros");
+            }
+            else if(spent == 0) { speechSynth("No has gastado nada en: " + category); }       
+            else { speechSynth("Gasto de: " + Math.abs(spent) + "euros" ); }
+        }
+
+        });
+    } else { speechSynth("Periodo de tiempo incorrecto!"); }
+}
 
 /*Functions and commands for question 5*/
 
@@ -236,11 +427,18 @@ var myTransactions = function(num) {
             var j = 0;
             $result.each(function() {
                 if (j != 0){
-                    for(var i = 1; i<= 2; ++i){
-                        speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
-                        speechSynth($(this).find('td:nth-child(' + i + ')').text());
+                     speechSynth("Movimiento número: " + (j) );
+                   for(var i = 1; i<= 2; ++i){
+                        if(i == 2){
+                            speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
+                            var date = $(this).find('td:nth-child(' + i + ')').text();
+                            speechSynth( date );
+                        } else {
+                            speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
+                            speechSynth($(this).find('td:nth-child(' + i + ')').text());
+                        }
+                        
                     }
-
                     //speechSynth($headerRow.find('th:nth-child(' + 3 + ')').text());
                     var money = parseFloat( $(this).find('td:nth-child(' + 3 + ')').text() );
                     if (parseFloat( money ) >= 0){
@@ -278,9 +476,16 @@ var myTransaction = function() {
             var j = 0;
             $result.each(function() {
                 if (j != 0){
-                    for(var i = 1; i<= 2; ++i){
-                        speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
-                        speechSynth($(this).find('td:nth-child(' + i + ')').text());
+                   for(var i = 1; i<= 2; ++i){
+                        if(i == 2){
+                            speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
+                            var date = $(this).find('td:nth-child(' + i + ')').text();
+                            speechSynth( date );
+                        } else {
+                            speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
+                            speechSynth($(this).find('td:nth-child(' + i + ')').text());
+                        }
+                        
                     }
 
                     //speechSynth($headerRow.find('th:nth-child(' + 3 + ')').text());
@@ -291,9 +496,9 @@ var myTransaction = function() {
                         speechSynth("Gasto de: " + Math.abs(money) + "euros" );
                     }
 
-
                 }
                 j++;
+
             });
             speechSynth("¿Quieres mas Transacciones?");
             annyang.addCommands(moreOrNot);
@@ -318,18 +523,10 @@ var moreOrNotMethod = function(res){
 }
 
 
-var comStop = {
-    'para': stopAnnyang
-};
-
-var stopAnnyang = function() {
-    annyang.pause();
-}
 
 /*Description of commands*/
 var comDesc = {
     0: 'Debes decir: hola',
-    1: 'Debes decir: dime, seguido de cualquier frase',
     2: 'Debes decir: gastado en, seguido de la categoría deseada y el periodo de tiempo deseado.',
     3: 'Debes decir: categoria mas dinero en, seguido del més del periodo de tiempo deseado',
     4: 'Debes decir: mejor, seguido de la categoría deseada y periodo de tiempodeseado.',
@@ -342,21 +539,6 @@ var comDesc = {
 };
 
 /*Array that contains all the commands to compare with user phrase*/
-var comForDif = [
-    /*Prova*/
-    'dime *text',
-    'hola',
-    /*Preguntes bancs*/
-    'gastado en *category periodo *period',
-    'categoría mas dinero periodo *period',
-    'mejor *site periodo *period',
-    'compara gastos *cat periodo *period',
-    'ciudad más veces *period',
-    'Refresca',
-    'comando :num',
-    ' últimas :num transacciones',
-    'última transacción'
-];
 
 
 /* ######################################################################*/
@@ -368,6 +550,14 @@ function speechSynth(text) {
 
     var utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'es-ES';
+    utterance.onstart = function (event) {
+        annyang.pause();
+        annyangStopped = 1;
+    }
+    utterance.onend = function (event) {
+        annyang.resume();
+        annyangStopped = 0;
+    }
     synth.speak(utterance);
 }
 
@@ -467,8 +657,8 @@ function LevenshteinDistance(s,t) {
 function minimumCommandDifference(user,th) {
     var min = Number.MAX_VALUE;
     var imin = -1;
-    for( var i = 0; i < comForDif.length; i++){
-        var distance = LevenshteinDistance(user[0],comForDif[i]);
+    for( var i = 0; i < arrayForDiff.length; i++){
+        var distance = LevenshteinDistance(user[0],arrayForDiff[i]);
        
         if (distance < min ){
             min = distance;
@@ -480,6 +670,17 @@ function minimumCommandDifference(user,th) {
 }
 
 
+function timeConverter(date){
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var year = date.getFullYear();
+  var month = months[date.getMonth()];
+  var spanishMonths = ['enero','febrero','marzo','abril','mayo','junio','julio',
+  'agosto','septiembre','noviembre','diciembre'];
+  var day = date.getDate();
+  var time = day + 'de ' +' ' + spanishMonths[month] + ' ' + 'de ' + year;
+  return time;
+}
+
 /* ######################################################################*/
 
 /* ######## Init methods ################################################*/
@@ -487,6 +688,7 @@ function minimumCommandDifference(user,th) {
 
 /*Variables*/
 var ready = 0;
+var annyangStopped = 0;
 var synth = window.speechSynthesis;
 var pressed = 0;
 
@@ -500,9 +702,10 @@ var greetings = [
 
 function addAnnyangCommands(){
     annyang.addCommands(com1);
-    annyang.addCommands(com2);
     annyang.addCommands(com3);
+    annyang.addCommands(com3transactions);
     annyang.addCommands(com4);
+    annyang.addCommands(com4transactions);
     annyang.addCommands(com5);
     annyang.addCommands(com6);
     annyang.addCommands(com7);
@@ -510,28 +713,39 @@ function addAnnyangCommands(){
     annyang.addCommands(com9);
     annyang.addCommands(com10);
     annyang.addCommands(com10unique);
-    annyang.addCommands(comStop);
+    annyang.addCommands(comSpentDate);
+    annyang.addCommands(comDisponibleQuestions);
+    addFAQCommands();
 }
 
 
- 
+
 
 /* Init methods */
 function startAnnyang(){
     if (annyang) {
-        addAnnyangCommands();
         annyang.setLanguage('es-ES');
-        annyang.start();
+        annyang.start({autoRestart: true, continuous: false});
         annyang.debug();
-        annyang.addCallback('resultNoMatch', function(userSaid, commandText, phrases) {
-            var diff = minimumCommandDifference(userSaid,6);
-            if(diff === -1)  speechSynth('No hemos encontrado ningún comando parecido a tu pregunta: puedes usar el comando 9 para comprender los comandos!');
+        addAnnyangCommands();
+        annyang.addCallback('resultNoMatch', function (userSaid, commandText, phrases) {
+            var diff = minimumCommandDifference(userSaid, 6);
+            if (diff === -1) speechSynth("No hemos encontrado ningún comando parecido a tu consulta." +
+                "Puedes pulsar la tecla: cu para saber cómo formular las preguntas: o bien puedes pulsar la tecla hache para informarte" +
+                "sobre como funciona la aplicación.");
             else speechSynth('Quizás te refieres al comando: ' + diff);
 
         });
     }
 }
 
+
+$(window).bind('beforeunload',function(){
+
+     //save info somewhere
+     synth.cancel();
+
+});
 
 $(document).ready(function() {
     if (ready < 1) {
@@ -543,14 +757,37 @@ $(document).ready(function() {
         $("body").keypress(function (e) {
             var code = e.keyCode || e.which;
             console.log(e);
-            if(code == 97) { //Enter keycode
+            if (code == 97) { //Enter keycode
                 //Do something
                 synth.cancel();
             }
-            if (code == 114){
-                annyang.resume()
+
+            if (code == 104) {
+                if (annyangStopped == 0) {
+                    speechSynth("El reconocimiento està activo");
+                } else speechSynth("El reconocimiento de voz está pausado.");
             }
-            
+            if (code == 113) {
+                speechSynth("Las preguntas màs frecuentes són: ");
+                for (var i = 0; i < Object.keys(faq).length; ++i) {
+                    speechSynth(Object.keys(faq)[i]);
+                }
+            }
+            if (code == 114) {
+                if (annyangStopped == 0) {
+                    annyang.pause();
+                    speechSynth("Aplicación pausada");
+                    annyangStopped = 1;
+                    return;
+                }
+                if (annyangStopped == 1) {
+                    speechSynth("Aplicación reanudada");
+                    annyangStopped = 0;
+                    annyang.resume();
+                    return;
+                }
+            }
+
             if (pressed == 0) {
                 startAnnyang();
                 pressed = 1;

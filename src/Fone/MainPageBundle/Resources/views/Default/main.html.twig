@@ -10,15 +10,19 @@
     {% endblock %}
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/chrono/1.2.5/chrono.min.js"></script> 
-    <script src="{{ asset('bundles/mainpage/js/annyang.js') }}"></script>
-    <script src="{{ asset('bundles/mainpage/js/main.js') }}"></script>
+
     <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+    <script src="{{ asset('bundles/mainpage/js/annyang.js') }}"></script>
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+
+    <script src="{{ asset('bundles/mainpage/js/moment.js') }}"></script>
+    <script src="{{ asset('bundles/mainpage/js/main.js') }}"></script>
 </head>
 
-</head>
 <body>
 
     <!-- Navbar -->
@@ -65,8 +69,5 @@
         </div>
     </div>
 
-    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
-    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
-    <script src="{{ asset('bundles/mainpage/js/main.js') }}"></script>
 </body>
 </html>
