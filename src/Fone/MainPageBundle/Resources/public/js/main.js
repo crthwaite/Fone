@@ -161,7 +161,7 @@ var catSpend = function (category,period) {
         var dates = parseDate(dataParsed[0]);
         console.log(dates);
         var url = Routing.generate('transaction_default_spent_category_date', 
-            {"category" : category.toUpperCase(),"day": parseInt(dates[0][0]), "month": parseInt(dates[0][1]), "year": parseInt(dates[0][2]) });
+            {"category" : category.toUpperCase().replace(' ','-'),"day": parseInt(dates[0][0]), "month": parseInt(dates[0][1]), "year": parseInt(dates[0][2]) });
         
         $.ajax({
         url: url,
@@ -190,7 +190,7 @@ var catTransactions = function(category,period){
     if(dataParsed.length > 0){
         var dates = parseDate(dataParsed[0]);
          var url = Routing.generate('transaction_default_get_user_transactions_category_date', 
-            {"category" : category.toUpperCase(),"day": parseInt(dates[0][0]), 
+            {"category" : category.toUpperCase().replace(' ','-'),"day": parseInt(dates[0][0]),
             "month": parseInt(dates[0][1]), "year": parseInt(dates[0][2]) });
          $.ajax({
         url: url,
@@ -237,7 +237,7 @@ var com4 = {
 };
 
 var spentCat = function (category) {
-     var url = Routing.generate('transaction_default_spent_incategory', {"category" : category.toUpperCase()});
+     var url = Routing.generate('transaction_default_spent_incategory', {"category" : category.toUpperCase().replace(' ','-')});
      $.ajax({
         url: url,
         success: function(result) {
@@ -260,7 +260,8 @@ var com4transactions = {
 }
 
 var transactionsCat = function(category) {
-     var url = Routing.generate('transaction_default_get_user_transactions_category', {"category" : category.toUpperCase()});
+     var url = Routing.generate('transaction_default_get_user_transactions_category', {"category" : category.toUpperCase().replace(' ','-')});
+      console.log(url);
        $.ajax({
         url: url,
         success: function(result) {
