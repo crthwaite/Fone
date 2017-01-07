@@ -359,8 +359,8 @@ class DefaultController extends Controller
         $tm    = $this->getTransactionManager();
         $result = $tm-> findCityMostVisited($accountIds);
 
-        reset($result);
-        die(var_dump($result));
+        end($result);
+
         return array('key' => key($result), 'result' => $result[key($result)]);
     }
 
