@@ -71,7 +71,8 @@ var questionDescription = {
     'decir: movimientos de, seguido de la categoría deseada':
     'Te permite saber los movimientos realizados en la categoría indicada',
     'decir: balance en la fecha, después decir la fecha deseada':
-    'este pregunta te permite saber el balance: gastos versus ingresos en la categoría indicada'
+    'este pregunta te permite saber el balance: gastos versus ingresos en la categoría indicada',
+    'cuál es la ciudad con más movimientos': 'ésta pregunta te permite saber la ciudad donde has realizado más movimientos'
 }
 
 var arrayForDiff = [
@@ -80,7 +81,8 @@ var arrayForDiff = [
     'movimientos de *category fecha *period',
     'gastado en *category',
     'movimientos de *category',
-    'balance en la fecha fecha *period' ]
+    'balance en la fecha fecha *period',
+'cuál es la ciudad con más movimientos']
 /*#######################################################*/
 
 /* ##################### Annyang variales ####################### */
@@ -104,7 +106,7 @@ function moreTransactions() {
                         if(i == 2){
                             speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                              var date = $(this).find('td:nth-child(' + i + ')').text();
-                            speechSynth( date );
+                            speechSynth( decodeDate(date) );
                         } else {
                             speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                             speechSynth($(this).find('td:nth-child(' + i + ')').text());
@@ -122,9 +124,9 @@ function moreTransactions() {
                 }
                 j++;
             });
+            speechSynth("Quieres más Transacciones?");
         }
     });
-    speechSynth("Quieres mas Transacciones?");
     //addCommand(moreOrNot);
 
 }
@@ -204,7 +206,7 @@ var catTransactions = function(category,period){
                         if(i == 2){
                             speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                             var date = $(this).find('td:nth-child(' + i + ')').text();
-                            speechSynth( date );
+                            speechSynth( decodeDate(date) );
                         } else {
                             speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                             speechSynth($(this).find('td:nth-child(' + i + ')').text());
@@ -273,7 +275,7 @@ var transactionsCat = function(category) {
                         if(i == 2){
                             speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                             var date = $(this).find('td:nth-child(' + i + ')').text();
-                            speechSynth( date );
+                            speechSynth( decodeDate(date) );
                         } else {
                             speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                             speechSynth($(this).find('td:nth-child(' + i + ')').text());
@@ -414,6 +416,10 @@ var com10 = {
 
 
 var myTransactions = function(num) {
+    if(isNaN(num)){
+        if(num == "dos") num = 2;
+        else if(num == "tres") num = 3;
+    }
     var url = Routing.generate('transaction_default_get_user_transactions', {"num" : parseInt(num),"pager": parseInt(pager)});
     console.log(url);
     numTrans = parseInt(num);
@@ -431,7 +437,7 @@ var myTransactions = function(num) {
                         if(i == 2){
                             speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                             var date = $(this).find('td:nth-child(' + i + ')').text();
-                            speechSynth( date );
+                            speechSynth( decodeDate(date) );
                         } else {
                             speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                             speechSynth($(this).find('td:nth-child(' + i + ')').text());
@@ -451,8 +457,21 @@ var myTransactions = function(num) {
                 j++;
             });
             speechSynth("¿Quieres mas Transacciones?");
-            annyang.addCommands(moreOrNot);
-            //console.log('hola');
+            var moreTrans = function () {
+                ++pager;
+                moreTransactions();
+            }
+            var noMoreTrans = function () {
+                pager = 0;
+                annyang.removeCommands(['sí','claro','no']);
+                speechSynth('Espero que te haya servido la respuesta!');
+            }
+            annyang.addCommands(
+                {'sí': moreTrans,
+                    'claro': moreTrans,
+                    'no': noMoreTrans
+                }
+            );
         }
     });
    
@@ -479,7 +498,7 @@ var myTransaction = function() {
                         if(i == 2){
                             speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                             var date = $(this).find('td:nth-child(' + i + ')').text();
-                            speechSynth( date );
+                            speechSynth( decodeDate(date) );
                         } else {
                             speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                             speechSynth($(this).find('td:nth-child(' + i + ')').text());
@@ -537,7 +556,20 @@ var comDesc = {
     10: 'Debes decir: última transacción'
 };
 
-/*Array that contains all the commands to compare with user phrase*/
+
+var mostVisitedCity = function () {
+    var url = Routing.generate('city_most_visited');
+    $.ajax({
+        url: url,
+        success: function(result) {
+            $('#result').html(result);
+            var city = $("#city").text().toLowerCase();
+            var times = $('#times').text();
+            speechSynth("En " + city + " has realizado " +
+                times + " movimientos");
+        }
+    });
+}
 
 
 /* ######################################################################*/
@@ -577,6 +609,29 @@ function speechCommand(text){
 * Returns an array of one or two dates meaning start time and end time
 * If there is no second date we will assume that user wants from start date to now
 */
+
+function decodeDate(date) {
+    console.log(date);
+    var dictMonth = {
+        'Jan': 'enero',
+        'Feb':'febrero',
+        'Mar': 'marzo',
+        'Apr': 'abril',
+        'May': 'mayo',
+        'Jun': 'junio',
+        'Jul': 'julio',
+        'Aug': 'agosto',
+        'Sep': 'septiembre',
+        'Oct': 'octubre',
+        'Nov': 'noviembre',
+        'Dec': 'diciembre'
+    }
+    var aux = date.split('-');
+    var day = parseInt(aux[0]);
+    var month =  dictMonth[ aux[1] ];
+    var year = parseInt(aux[2]);
+    return day + ' de ' + month + ' de ' + year;
+}
 
 function parseDate(period){
     retDates = [];
@@ -710,7 +765,8 @@ function addAnnyangCommands(){
         'movimientos de *category': transactionsCat,
         'balance en la fecha *period': spentDateMethod,
         'última transacción': myTransaction,
-        'últimas :num transacciones'  : myTransactions
+        'últimas :num transacciones'  : myTransactions,
+        'Cuál es la ciudad con más movimientos': mostVisitedCity
     };
     annyang.addCommands(commands);
     addFAQCommands();
@@ -769,8 +825,9 @@ $(document).ready(function() {
         }
 
         if(code == 13){
+            var audio = new Audio('/bundles/mainpage/audio/audio.mp3');
+            audio.play();
             synth.cancel();
-            startSpeechSynth("piiiip");
             annyang.resume();
         }
     });
