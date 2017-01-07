@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: christopher
- * Date: 24/10/16
- * Time: 17:08
- */
 
 namespace Fone\TransactionBundle\Document;
 
