@@ -383,7 +383,6 @@
      */
     addCommands: function(commands) {
       var cb;
-
       initIfNeeded();
 
       for (let phrase in commands) {

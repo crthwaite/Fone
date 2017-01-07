@@ -8,14 +8,26 @@ var faq = {
     "como pausar el reconocimiento de voz": "para pausar el reconocimiento, pulsa la tecla erre",
     "como reanudar el reconocimiento de voz": "para reanudar el reconociemento puedes pulsar la tecla erre s" +
     "i lo has pausado prèviamente",
+    'como parar la respuesta': 'puedes parar la respuesta pulsando la tecla: a',
+    'como puedo preguntar': 'para preguntar pulsa la tecla enter, después el sistema te permitirà hacer una pregunta'
 
 }
 /*Commands for questions*/
 function addFAQCommands() {
-    annyang.addCommands(comWhatQuestions);
-    annyang.addCommands(comHowReset);
-    annyang.addCommands(comHowReanudate);
-    annyang.addCommands(comHowPause);
+    var FAQcommands = {
+        'que preguntas puedo hacer' : whatQuestionsMethod,
+        'cómo reiniciar la aplicación': howResetMethod,
+        'como cancelar la respuesta': howToStop,
+        'como puedo preguntar': howToQuery
+    };
+    annyang.addCommands(FAQcommands);
+}
+
+var howToQuery = function () {
+    speechSynth(faq[3]);
+}
+var howToStop = function () {
+    speechSynth(faq[2]);
 }
 var comWhatQuestions = {
     'que preguntas puedo hacer' : whatQuestionsMethod
@@ -28,19 +40,6 @@ var comHowReset = {
 };
 var howResetMethod = function () {
     speechSynth(faq[1]);
-};
-var comHowPause = {
-    "como pausar el reconocimiento de voz": howPauseMethod
-};
-var howPauseMethod = function () {
-    speechSynth(faq[2]);
-};
-
-var comHowReanudate = {
-    "ccomo reanudar el reconocimiento de voz": howReanudateMethod
-};
-var howReanudateMethod = function () {
-    speechSynth(faq[3]);
 };
 
 /*Disponible questions commands*/
@@ -551,16 +550,18 @@ function speechSynth(text) {
     var utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'es-ES';
     utterance.onstart = function (event) {
-        annyang.pause();
+        annyang.abort();
         annyangStopped = 1;
-    }
-    utterance.onend = function (event) {
-        annyang.resume();
-        annyangStopped = 0;
     }
     synth.speak(utterance);
 }
 
+function startSpeechSynth(text) {
+    var synth2 = window.speechSynthesis;
+    var utterance2 = new SpeechSynthesisUtterance(text);
+    utterance2.lang = 'es-ES';
+    synth2.speak(utterance2);
+}
 function speechCommand(text){
     var utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'es-ES';
@@ -689,9 +690,8 @@ function timeConverter(date){
 /*Variables*/
 var ready = 0;
 var annyangStopped = 0;
-var synth = window.speechSynthesis;
 var pressed = 0;
-
+var synth = window.speechSynthesis;
 var greetings = [
 "Sea usted bienvenido!",
 "Hola, bienvenido a Foné!",
@@ -701,33 +701,33 @@ var greetings = [
 /*Descripcion of the commands that sytem has to say to the user*/
 
 function addAnnyangCommands(){
-    annyang.addCommands(com1);
-    annyang.addCommands(com3);
-    annyang.addCommands(com3transactions);
-    annyang.addCommands(com4);
-    annyang.addCommands(com4transactions);
-    annyang.addCommands(com5);
-    annyang.addCommands(com6);
-    annyang.addCommands(com7);
-    annyang.addCommands(com8);
-    annyang.addCommands(com9);
-    annyang.addCommands(com10);
-    annyang.addCommands(com10unique);
-    annyang.addCommands(comSpentDate);
-    annyang.addCommands(comDisponibleQuestions);
+    var commands = {
+        'refresca': refresh,
+        'Saluda': greet,
+        'gastado en *category en la fecha *period': catSpend,
+        'transacciones de *category fecha *period' : catTransactions,
+        'gastado en *category' : spentCat,
+        'movimientos de *category': transactionsCat,
+        'balance en la fecha *period': spentDateMethod,
+        'última transacción': myTransaction,
+        'últimas :num transacciones'  : myTransactions
+    };
+    annyang.addCommands(commands);
     addFAQCommands();
 }
-
-
 
 
 /* Init methods */
 function startAnnyang(){
     if (annyang) {
+        annyang.addCallback('error',function (event) {
+            console.log(event);
+        });
+        annyang.debug();
         annyang.setLanguage('es-ES');
         addAnnyangCommands();
         annyang.start({autoRestart: true, continuous: false});
-        annyang.debug();
+
         annyang.addCallback('resultNoMatch', function (userSaid, commandText, phrases) {
             var diff = minimumCommandDifference(userSaid, 6);
             if (diff === -1) speechSynth("No hemos encontrado ningún comando parecido a tu consulta." +
@@ -748,52 +748,32 @@ $(window).bind('beforeunload',function(){
 });
 
 $(document).ready(function() {
-    if (ready < 1) {
-        var index = Math.floor((Math.random() * greetings.length));
-        speechSynth(greetings[index]);
-        speechSynth('Pulsa la tecla: a, para iniciar!.');
-        ready = 1;
+    var index = Math.floor((Math.random() * greetings.length));
+    var welcome = greetings[index];
+    startAnnyang();
+    speechSynth(welcome);
 
-        $("body").keypress(function (e) {
-            var code = e.keyCode || e.which;
-            console.log(e);
-            if (code == 97) { //Enter keycode
-                //Do something
-                synth.cancel();
-            }
+    $("body").keypress(function (e) {
+        var code = e.keyCode || e.which;
+        console.log(e);
+        if (code == 97) { //Enter keycode
+            //Do something
+            synth.cancel();
+        }
 
-            if (code == 104) {
-                if (annyangStopped == 0) {
-                    speechSynth("El reconocimiento està activo");
-                } else speechSynth("El reconocimiento de voz está pausado.");
+        if (code == 113) {
+            speechSynth("Las preguntas más frecuentes són: ");
+            for (var i = 0; i < Object.keys(faq).length; ++i) {
+                speechSynth(Object.keys(faq)[i]);
             }
-            if (code == 113) {
-                speechSynth("Las preguntas más frecuentes són: ");
-                for (var i = 0; i < Object.keys(faq).length; ++i) {
-                    speechSynth(Object.keys(faq)[i]);
-                }
-            }
-            if (code == 114) {
-                if (annyangStopped == 0) {
-                    annyang.pause();
-                    speechSynth("Aplicación pausada");
-                    annyangStopped = 1;
-                    return;
-                }
-                if (annyangStopped == 1) {
-                    speechSynth("Aplicación reanudada");
-                    annyangStopped = 0;
-                    annyang.resume();
-                    return;
-                }
-            }
+        }
 
-            if (pressed == 0) {
-                startAnnyang();
-                pressed = 1;
-            }
-        });
-    }
+        if(code == 13){
+            synth.cancel();
+            startSpeechSynth("piiiip");
+            annyang.resume();
+        }
+    });
 });
 
 
