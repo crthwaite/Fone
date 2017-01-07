@@ -725,9 +725,9 @@ function addAnnyangCommands(){
 function startAnnyang(){
     if (annyang) {
         annyang.setLanguage('es-ES');
+        addAnnyangCommands();
         annyang.start({autoRestart: true, continuous: false});
         annyang.debug();
-        addAnnyangCommands();
         annyang.addCallback('resultNoMatch', function (userSaid, commandText, phrases) {
             var diff = minimumCommandDifference(userSaid, 6);
             if (diff === -1) speechSynth("No hemos encontrado ningún comando parecido a tu consulta." +
@@ -751,7 +751,7 @@ $(document).ready(function() {
     if (ready < 1) {
         var index = Math.floor((Math.random() * greetings.length));
         speechSynth(greetings[index]);
-        speechSynth('Pulsa una tecla para iniciar!.');
+        speechSynth('Pulsa la tecla: a, para iniciar!.');
         ready = 1;
 
         $("body").keypress(function (e) {
@@ -768,7 +768,7 @@ $(document).ready(function() {
                 } else speechSynth("El reconocimiento de voz está pausado.");
             }
             if (code == 113) {
-                speechSynth("Las preguntas màs frecuentes són: ");
+                speechSynth("Las preguntas más frecuentes són: ");
                 for (var i = 0; i < Object.keys(faq).length; ++i) {
                     speechSynth(Object.keys(faq)[i]);
                 }
