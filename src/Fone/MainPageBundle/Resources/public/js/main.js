@@ -3,43 +3,41 @@
 /*Questions */
 
 var faq = {
-    "que preguntas puedo hacer": "puedes saber que preguntas hacer diciendo: que preguntas puedo hacer",
+    "como saber que preguntas puedo hacer": "puedes saber que preguntas hacer diciendo: que preguntas puedo hacer",
     "como reiniciar la aplicación": "para reiniciar la aplicación, puedes hacerlo diciendo: refresca",
-    "como pausar el reconocimiento de voz": "para pausar el reconocimiento, pulsa la tecla erre",
-    "como reanudar el reconocimiento de voz": "para reanudar el reconociemento puedes pulsar la tecla erre s" +
-    "i lo has pausado prèviamente",
-    'como parar la respuesta': 'puedes parar la respuesta pulsando la tecla: a',
+    'como cancelar la respuesta': 'puedes parar la respuesta pulsando la tecla: a',
     'como puedo preguntar': 'para preguntar pulsa la tecla enter, después el sistema te permitirà hacer una pregunta'
 
 }
 /*Commands for questions*/
 function addFAQCommands() {
     var FAQcommands = {
-        'que preguntas puedo hacer' : whatQuestionsMethod,
+        "cómo saber que preguntas puedo hacer" : whatQuestionsMethod,
         'cómo reiniciar la aplicación': howResetMethod,
-        'como cancelar la respuesta': howToStop,
-        'como puedo preguntar': howToQuery
+        'cómo cancelar la respuesta': howToStop,
+        'cómo puedo preguntar': howToQuery
     };
     annyang.addCommands(FAQcommands);
 }
 
 var howToQuery = function () {
-    speechSynth(faq[3]);
+    debugger;
+    speechSynth(faq[ 'cómo puedo preguntar']);
 }
 var howToStop = function () {
-    speechSynth(faq[2]);
+    speechSynth(faq['cómo cancelar la respuesta']);
 }
 var comWhatQuestions = {
     'que preguntas puedo hacer' : whatQuestionsMethod
 }
 var whatQuestionsMethod = function () {
-    speechSynth(faq[0]);
+    speechSynth(faq[ "cómo saber que preguntas puedo hacer"]);
 };
 var comHowReset = {
     'cómo reiniciar la aplicación': howResetMethod
 };
 var howResetMethod = function () {
-    speechSynth(faq[1]);
+    speechSynth(faq["como reiniciar la aplicación"]);
 };
 
 /*Disponible questions commands*/
@@ -48,14 +46,24 @@ var comDisponibleQuestions = {
     'que preguntas puedo hacer': disponibleQuestionsMethod
 };
 
+var exampleCommands = [
+    'gastado en ROPA el 1 de enero de 2015',
+    'movimientos en ROPA el 1 de enero de 2015' ,
+    'gastado en ROPA' ,
+    'movimientos en ROPA',
+    'saldo el 1 de enero de 2015',
+    'último movimiento',
+    'últimos 5 movimientos' ,
+    'ciudad con más movimientos',
+    'Ayuda',
+    'refresca',
+    'Saluda'
+];
+
 var disponibleQuestionsMethod = function () {
-    speechSynth("Las preguntas disponibles són:");
-    var keys = Object.keys(questionDescription);
-    for(var i = 0; i < keys.length; ++i){
-        speechSynth('Formulación de la pregunta:');
-        speechSynth(keys[i]);
-        speechSynth('Utilidad:');
-        speechSynth(questionDescription[ keys[i] ]);
+    speechSynth("Ejemplos de preguntas");
+    for(var i = 0; i < exampleCommands.length; ++i){
+        speechSynth(exampleCommands[i]);
     }
 }
 
@@ -124,7 +132,7 @@ function moreTransactions() {
                 }
                 j++;
             });
-            speechSynth("Quieres más Transacciones?");
+           askMoreQuestions();
         }
     });
     //addCommand(moreOrNot);
@@ -457,22 +465,7 @@ var myTransactions = function(num) {
                 }
                 j++;
             });
-            speechSynth("¿Quieres mas Transacciones?");
-            var moreTrans = function () {
-                ++pager;
-                moreTransactions();
-            }
-            var noMoreTrans = function () {
-                pager = 0;
-                annyang.removeCommands(['sí','claro','no']);
-                speechSynth('Espero que te haya servido la respuesta!');
-            }
-            annyang.addCommands(
-                {'sí': moreTrans,
-                    'claro': moreTrans,
-                    'no': noMoreTrans
-                }
-            );
+            askMoreQuestions();
         }
     });
    
@@ -497,11 +490,11 @@ var myTransaction = function() {
                 if (j != 0){
                    for(var i = 1; i<= 2; ++i){
                         if(i == 2){
-                            speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
+                            //speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                             var date = $(this).find('td:nth-child(' + i + ')').text();
-                            speechSynth( decodeDate(date) );
+                            speechSynth( "realizado el: " + decodeDate(date) );
                         } else {
-                            speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
+                            //speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                             speechSynth($(this).find('td:nth-child(' + i + ')').text());
                         }
                         
@@ -519,8 +512,7 @@ var myTransaction = function() {
                 j++;
 
             });
-            speechSynth("¿Quieres mas Transacciones?");
-            annyang.addCommands(moreOrNot);
+           askMoreQuestions();
             //console.log('hola');
         }
     });
@@ -542,7 +534,24 @@ var moreOrNotMethod = function(res){
 }
 
 
-
+function askMoreQuestions() {
+    speechSynth("¿Quieres mas Transacciones?",true);
+    var moreTrans = function () {
+        ++pager;
+        moreTransactions();
+    }
+    var noMoreTrans = function () {
+        pager = 0;
+        annyang.removeCommands(['sí','claro','no']);
+        speechSynth('Espero que te haya servido la respuesta!');
+    }
+    annyang.addCommands(
+        {   'sí': moreTrans,
+            'claro': moreTrans,
+            'no': noMoreTrans
+        }
+    );
+}
 /*Description of commands*/
 var comDesc = {
     0: 'Debes decir: hola',
@@ -578,13 +587,21 @@ var mostVisitedCity = function () {
 
 /* ######## Synth methods ################################################*/
 
-function speechSynth(text) {
-
+function speechSynth(text, resum ) {
+    resum = resum || false;
+    debugger;
     var utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'es-ES';
+    utterance.rate = 1.1;
     utterance.onstart = function (event) {
         annyang.abort();
         annyangStopped = 1;
+    }
+    if(resum){
+        utterance.onend = function (event) {
+            annyang.resume();
+            annyangStopped = 0;
+        }
     }
     synth.speak(utterance);
 }
@@ -714,8 +731,8 @@ function LevenshteinDistance(s,t) {
 function minimumCommandDifference(user,th) {
     var min = Number.MAX_VALUE;
     var imin = -1;
-    for( var i = 0; i < arrayForDiff.length; i++){
-        var distance = LevenshteinDistance(user[0],arrayForDiff[i]);
+    for( var i = 0; i < exampleCommands.length; i++){
+        var distance = LevenshteinDistance(user[0],exampleCommands[i]);
        
         if (distance < min ){
             min = distance;
@@ -760,19 +777,26 @@ function addAnnyangCommands(){
     var commands = {
         'refresca': refresh,
         'Saluda': greet,
-        'gastado en *category en la fecha *period': catSpend,
-        'transacciones de *category fecha *period' : catTransactions,
+        'gastado en *category el *period': catSpend,
+        'movimientos en *category el *period' : catTransactions,
         'gastado en *category' : spentCat,
-        'movimientos de *category': transactionsCat,
-        'balance en la fecha *period': spentDateMethod,
-        'última transacción': myTransaction,
-        'últimas :num transacciones'  : myTransactions,
-        'Cuál es la ciudad con más movimientos': mostVisitedCity
+        'movimientos en *category': transactionsCat,
+        'saldo el *period': spentDateMethod,
+        'último movimiento': myTransaction,
+        'últimos :num movimientos'  : myTransactions,
+        'ciudad con más movimientos': mostVisitedCity,
+        'Ayuda': help
     };
     annyang.addCommands(commands);
     addFAQCommands();
 }
 
+var help = function () {
+    speechSynth('Pulsa enter antes de preguntar:');
+    speechSynth('Pulsa ce para callar la aplicación:');
+    speechSynth('Pulsa cu para consultar las preguntas disponibles:');
+    speechSynth('Pulsa ache para obtener ayuda.')
+};
 
 /* Init methods */
 function startAnnyang(){
@@ -785,12 +809,14 @@ function startAnnyang(){
         addAnnyangCommands();
         annyang.start({autoRestart: true, continuous: false});
 
-        annyang.addCallback('resultNoMatch', function (userSaid, commandText, phrases) {
-            var diff = minimumCommandDifference(userSaid, 6);
-            if (diff === -1) speechSynth("No hemos encontrado ningún comando parecido a tu consulta." +
-                "Puedes pulsar la tecla: cu para saber cómo formular las preguntas: o bien puedes pulsar la tecla hache para informarte" +
-                "sobre como funciona la aplicación.");
-            else speechSynth('Quizás te refieres al comando: ' + diff);
+        annyang.addCallback('resultNoMatch', function (userSaid, commandText, phrases){
+            var th = userSaid[0].length * 0.2;
+            var diff = minimumCommandDifference(userSaid, th);
+            if (diff === -1) {
+                speechSynth("No he reconocido tu pregunta.");
+                speechSynth("Pulsa cu para consultar las preguntas disponibles");
+            }
+            else speechSynth('Una pregunta parecida sería: ' + exampleCommands[diff]);
 
         });
     }
@@ -813,16 +839,17 @@ $(document).ready(function() {
     $("body").keypress(function (e) {
         var code = e.keyCode || e.which;
         console.log(e);
-        if (code == 97) { //Enter keycode
+        if (code == 99) { //Enter keycode
             //Do something
             synth.cancel();
         }
 
         if (code == 113) {
-            speechSynth("Las preguntas más frecuentes són: ");
-            for (var i = 0; i < Object.keys(faq).length; ++i) {
-                speechSynth(Object.keys(faq)[i]);
-            }
+            disponibleQuestionsMethod();
+        }
+
+        if(code == 104){
+            help();
         }
 
         if(code == 13){
