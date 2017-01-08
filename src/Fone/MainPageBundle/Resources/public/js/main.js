@@ -114,7 +114,7 @@ function moreTransactions() {
                         if(i == 2){
                             speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                              var date = $(this).find('td:nth-child(' + i + ')').text();
-                            speechSynth( decodeDate(date) );
+                            speechSynth( "realizado el: " + decodeDate(date) );
                         } else {
                             speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                             speechSynth($(this).find('td:nth-child(' + i + ')').text());
@@ -214,7 +214,7 @@ var catTransactions = function(category,period){
                         if(i == 2){
                             speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                             var date = $(this).find('td:nth-child(' + i + ')').text();
-                            speechSynth( decodeDate(date) );
+                            speechSynth( "realizado el: " + decodeDate(date) );
                         } else {
                             speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                             speechSynth($(this).find('td:nth-child(' + i + ')').text());
@@ -284,7 +284,7 @@ var transactionsCat = function(category) {
                         if(i == 2){
                             speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                             var date = $(this).find('td:nth-child(' + i + ')').text();
-                            speechSynth( decodeDate(date) );
+                            speechSynth( "realizado el: " + decodeDate(date) );
                         } else {
                             speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                             speechSynth($(this).find('td:nth-child(' + i + ')').text());
@@ -446,7 +446,7 @@ var myTransactions = function(num) {
                         if(i == 2){
                             speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                             var date = $(this).find('td:nth-child(' + i + ')').text();
-                            speechSynth( decodeDate(date) );
+                            speechSynth( "realizado el: " + decodeDate(date) );
                         } else {
                             speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                             speechSynth($(this).find('td:nth-child(' + i + ')').text());
