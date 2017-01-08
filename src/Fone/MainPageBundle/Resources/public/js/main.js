@@ -21,7 +21,6 @@ function addFAQCommands() {
 }
 
 var howToQuery = function () {
-    debugger;
     speechSynth(faq[ 'cómo puedo preguntar']);
 }
 var howToStop = function () {
@@ -99,7 +98,7 @@ var pager = 0;
 var numTrans = 0;
 function moreTransactions() {
     var url = Routing.generate('transaction_default_get_user_transactions', {"num" : parseInt(numTrans),"pager": parseInt(pager)});
-    console.log(url);
+    //console.log(url);
     $.ajax({
         url: url,
         success: function(result) {
@@ -168,7 +167,7 @@ var catSpend = function (category,period) {
     if(dataParsed.length > 0){
          /*Pass parameters to back-end*/
         var dates = parseDate(dataParsed[0]);
-        console.log(dates);
+        //console.log(dates);
         var url = Routing.generate('transaction_default_spent_category_date', 
             {"category" : category.toUpperCase().replace(' ','-'),"day": parseInt(dates[0][0]), "month": parseInt(dates[0][1]), "year": parseInt(dates[0][2]) });
         
@@ -270,7 +269,7 @@ var com4transactions = {
 
 var transactionsCat = function(category) {
      var url = Routing.generate('transaction_default_get_user_transactions_category', {"category" : category.toUpperCase().replace(' ','-')});
-      console.log(url);
+      //console.log(url);
        $.ajax({
         url: url,
         success: function(result) {
@@ -350,7 +349,7 @@ var siteMonth = function (site,period) {
     if(dataParsed.length > 0){
         /*Pass parameters to back-end*/
         var dates = parseDate(dataParsed[0]);
-         console.log(dates[0]);
+         //console.log(dates[0]);
         $('#result').text("Tu sitio es: " + site + " y periodo dicho es: " + period);
         speechSynth("Tu sitio es: " + site  + "y el periodo dicho es: " + period);
     } else speechSynth('Periodo de tiempo incorrecto');
@@ -370,7 +369,7 @@ var compareCat = function (cat,period) {
     if(dataParsed.length > 0){
         /*Pass parameters to back-end*/
         var dates = parseDate(dataParsed[0]);
-         console.log(dates[0]);
+         //console.log(dates[0]);
          $("#result").text("Tu categoría es: " + cat + " y has pedido la comparación entre: " +
          period);
     } else speechSynth('Periodo de tiempo incorrecto');
@@ -389,7 +388,7 @@ var city = function (period) {
     var dataParsed = chrono.parse(period);
     if(dataParsed.length > 0){
       var dates = parseDate(dataParsed[0]);
-      console.log(dates[0]);
+      //console.log(dates[0]);
        $('#result').text("Quieres saber en que ciudad has estado mas tiempo durante: " + period);
        speechSynth("Quieres saber en que ciudad has estado mas tiempo durante: " + period);
     } else speechSynth('Periodo de tiempo incorrecto');
@@ -431,7 +430,7 @@ var myTransactions = function(num) {
         else if(num == "tres") num = 3;
     }
     var url = Routing.generate('transaction_default_get_user_transactions', {"num" : parseInt(num),"pager": parseInt(pager)});
-    console.log(url);
+    //console.log(url);
     numTrans = parseInt(num);
     $.ajax({
         url: url,
@@ -478,7 +477,7 @@ var com10unique = {
 
 var myTransaction = function() {
      var url = Routing.generate('transaction_default_get_user_transactions', {"num" : parseInt(1),"pager": parseInt(pager)});
-    console.log(url);
+    //console.log(url);
     numTrans = parseInt(1);
     $.ajax({
         url: url,
@@ -591,7 +590,6 @@ var mostVisitedCity = function () {
 
 function speechSynth(text, resum ) {
     resum = resum || false;
-    debugger;
     var utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'es-ES';
     utterance.rate = 1.1;
@@ -633,7 +631,7 @@ function speechCommand(text){
 */
 
 function decodeDate(date) {
-    console.log(date);
+    //console.log(date);
     var dictMonth = {
         'Jan': 'enero',
         'Feb':'febrero',
@@ -806,9 +804,9 @@ var help = function () {
 function startAnnyang(){
     if (annyang) {
         annyang.addCallback('error',function (event) {
-            console.log(event);
+            //console.log(event);
         });
-        annyang.debug();
+        //annyang.debug();
         annyang.setLanguage('es-ES');
         addAnnyangCommands();
         annyang.start({autoRestart: true, continuous: false});
@@ -843,7 +841,7 @@ $(document).ready(function() {
     speechSynth("Para preguntar: pulsa enter. y ache para consultar la ayuda.");
     $("body").keypress(function (e) {
         var code = e.keyCode || e.which;
-        console.log(e);
+        //console.log(e);
         if (code == 99) { //Enter keycode
             //Do something
             synth.cancel();
