@@ -51,7 +51,7 @@ var exampleCommands = [
     'movimientos en ROPA el 1 de enero de 2015' ,
     'gastado en ROPA' ,
     'movimientos en ROPA',
-    'saldo el 1 de enero de 2015',
+    'gastado el 1 de enero de 2015',
     'último movimiento',
     'últimos 5 movimientos' ,
     'ciudad con más movimientos',
@@ -109,14 +109,14 @@ function moreTransactions() {
             var j = 0;
             $result.each(function() {
                 if (j != 0){
-                     speechSynth("Movimiento número: " + (j) );
+                     speechSynth("Movimiento número " + (numTrans + j) );
                     for(var i = 1; i<= 2; ++i){
                         if(i == 2){
-                            speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
+                           // speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                              var date = $(this).find('td:nth-child(' + i + ')').text();
                             speechSynth( "realizado el: " + decodeDate(date) );
                         } else {
-                            speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
+                            //speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                             speechSynth($(this).find('td:nth-child(' + i + ')').text());
                         }
                         
@@ -132,6 +132,7 @@ function moreTransactions() {
                 }
                 j++;
             });
+            numTrans += numTrans;
            askMoreQuestions();
         }
     });
@@ -177,7 +178,7 @@ var catSpend = function (category,period) {
             $('#result').html(result);
             var text = $("#text").text();
             var spent = parseFloat($("#spent").text());
-            if (parseFloat( spent ) >= 0){
+            if (parseFloat( spent ) > 0){
                         speechSynth("Ingreso de: " + Math.abs(spent) + "euros");
             }
             else if(spent == 0) { speechSynth("No has gastado nada en: " + category); }       
@@ -209,14 +210,14 @@ var catTransactions = function(category,period){
             var j = 0;
             $result.each(function() {
                 if (j != 0){
-                     speechSynth("Movimiento número: " + (j) );
+                     speechSynth("Movimiento " + (j) );
                     for(var i = 1; i<= 2; ++i){
                         if(i == 2){
-                            speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
+                            //speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                             var date = $(this).find('td:nth-child(' + i + ')').text();
                             speechSynth( "realizado el: " + decodeDate(date) );
                         } else {
-                            speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
+                           // speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                             speechSynth($(this).find('td:nth-child(' + i + ')').text());
                         }
                         
@@ -279,14 +280,14 @@ var transactionsCat = function(category) {
             var j = 0;
             $result.each(function() {
                 if (j != 0){
-                     speechSynth("Movimiento número: " + (j) );
+                     speechSynth("Movimiento " + (j) );
                     for(var i = 1; i<= 2; ++i){
                         if(i == 2){
-                            speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
+                            //speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                             var date = $(this).find('td:nth-child(' + i + ')').text();
                             speechSynth( "realizado el: " + decodeDate(date) );
                         } else {
-                            speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
+                            //speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                             speechSynth($(this).find('td:nth-child(' + i + ')').text());
                         }
                         
@@ -441,14 +442,14 @@ var myTransactions = function(num) {
             var j = 0;
             $result.each(function() {
                 if (j != 0){
-                     speechSynth("Movimiento número: " + (j) );
+                     speechSynth("Movimiento " + (j) );
                    for(var i = 1; i<= 2; ++i){
                         if(i == 2){
-                            speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
+                            //speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                             var date = $(this).find('td:nth-child(' + i + ')').text();
                             speechSynth( "realizado el: " + decodeDate(date) );
                         } else {
-                            speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
+                            //speechSynth($headerRow.find('th:nth-child(' + i + ')').text());
                             speechSynth($(this).find('td:nth-child(' + i + ')').text());
                         }
                         
@@ -502,9 +503,10 @@ var myTransaction = function() {
 
                     //speechSynth($headerRow.find('th:nth-child(' + 3 + ')').text());
                     var money = parseFloat( $(this).find('td:nth-child(' + 3 + ')').text() );
-                    if (parseFloat( money ) >= 0){
+                    if (parseFloat( money ) > 0){
                         speechSynth("Ingreso de: " + Math.abs(money) + "euros");
-                    } else {
+                    }
+                    else {
                         speechSynth("Gasto de: " + Math.abs(money) + "euros" );
                     }
 
@@ -600,6 +602,8 @@ function speechSynth(text, resum ) {
     if(resum){
         utterance.onend = function (event) {
             annyang.resume();
+            var audio = new Audio('/bundles/mainpage/audio/audio.mp3');
+            audio.play();
             annyangStopped = 0;
         }
     }
@@ -781,7 +785,7 @@ function addAnnyangCommands(){
         'movimientos en *category el *period' : catTransactions,
         'gastado en *category' : spentCat,
         'movimientos en *category': transactionsCat,
-        'saldo el *period': spentDateMethod,
+        'gastado el *period': spentDateMethod,
         'último movimiento': myTransaction,
         'últimos :num movimientos'  : myTransactions,
         'ciudad con más movimientos': mostVisitedCity,
@@ -793,7 +797,7 @@ function addAnnyangCommands(){
 
 var help = function () {
     speechSynth('Pulsa enter antes de preguntar:');
-    speechSynth('Pulsa ce para callar la aplicación:');
+    speechSynth('Pulsa ce para silenciar la aplicación:');
     speechSynth('Pulsa cu para consultar las preguntas disponibles:');
     speechSynth('Pulsa ache para obtener ayuda.')
 };
@@ -834,8 +838,9 @@ $(document).ready(function() {
     var index = Math.floor((Math.random() * greetings.length));
     var welcome = greetings[index];
     startAnnyang();
-    speechSynth(welcome);
-
+    var username = $("#username").val();
+    speechSynth("Bienvenido. " + username + ".");
+    speechSynth("Para preguntar: pulsa enter. y ache para consultar la ayuda.");
     $("body").keypress(function (e) {
         var code = e.keyCode || e.which;
         console.log(e);

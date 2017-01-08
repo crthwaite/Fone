@@ -279,9 +279,9 @@ class DefaultController extends Controller
         $categories = $this->_cleanAndGetCategories($category);
 
         $tm    = $this->getTransactionManager();
-        $spent = $tm->findSpentCategory($accountIds, $category);
+        $spent = $tm->findSpentCategory($accountIds, $categories);
 
-        return array('category' => $categories, 'spent' => $spent);
+        return array('category' => $category, 'spent' => $spent);
     }
 
     /**
