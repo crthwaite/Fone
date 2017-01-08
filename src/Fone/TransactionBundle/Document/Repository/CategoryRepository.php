@@ -12,5 +12,11 @@ use Doctrine\ODM\MongoDB\DocumentRepository;
 
 class CategoryRepository extends DocumentRepository
 {
-
+    public function findByName($category)
+    {
+        return $this->createQueryBuilder()
+            ->field('name')->equals($category)
+            ->getQuery()
+            ->execute();
+    }
 }

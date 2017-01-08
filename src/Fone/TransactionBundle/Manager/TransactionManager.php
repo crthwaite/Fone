@@ -21,7 +21,7 @@ class TransactionManager extends CoreManager
 
     public function findTransactionsCategoryDate(
         $accountIds,
-        $category,
+        $categories,
         $day,
         $month,
         $year,
@@ -31,7 +31,7 @@ class TransactionManager extends CoreManager
         if (is_null($year)) {
             $transactions = $this->getRepository()->getSpentCategoryDate(
                 $accountIds,
-                $category,
+                $categories,
                 $day,
                 $month,
                 $num,
@@ -40,7 +40,7 @@ class TransactionManager extends CoreManager
         } else {
             $transactions = $this->getRepository()->getSpentCategoryFullDate(
                 $accountIds,
-                $category,
+                $categories,
                 $day,
                 $month,
                 $year,
@@ -52,9 +52,9 @@ class TransactionManager extends CoreManager
         return $transactions;
     }
 
-    public function findTransactionsCategory($accountIds, $category, $num, $pager)
+    public function findTransactionsCategory($accountIds, $categories, $num, $pager)
     {
-        return $this->getRepository()->getSpentCategory($accountIds, $category, $num, $pager);
+        return $this->getRepository()->getSpentCategory($accountIds, $categories, $num, $pager);
     }
 
     public function findTransactionsDate($accountIds, $day, $month, $year, $num, $pager)
@@ -204,9 +204,9 @@ class TransactionManager extends CoreManager
         return $spent;
     }
 
-    public function findSpentCategory($accountIds, $category)
+    public function findSpentCategory($accountIds, $categories)
     {
-        $transactions = $this->getRepository()->getSpentCategory($accountIds, $category);
+        $transactions = $this->getRepository()->getSpentCategory($accountIds, $categories);
 
         $spent = 0.0;
         /** @var Transaction $transaction */
@@ -217,14 +217,14 @@ class TransactionManager extends CoreManager
         return $spent;
     }
 
-    public function findSpentCategoryDate($accountIds, $category, $day, $month, $year)
+    public function findSpentCategoryDate($accountIds, $categories, $day, $month, $year)
     {
         if (is_null($year)) {
-            $transactions = $this->getRepository()->getSpentCategoryDate($accountIds, $category, $day, $month);
+            $transactions = $this->getRepository()->getSpentCategoryDate($accountIds, $categories, $day, $month);
         } else {
             $transactions = $this->getRepository()->getSpentCategoryFullDate(
                 $accountIds,
-                $category,
+                $categories,
                 $day,
                 $month,
                 $year

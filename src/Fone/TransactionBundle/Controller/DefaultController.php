@@ -3,6 +3,8 @@
 namespace Fone\TransactionBundle\Controller;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
+use Fone\TransactionBundle\Document\Category;
+use Fone\TransactionBundle\Manager\CategoryManager;
 use Fone\TransactionBundle\Manager\TransactionManager;
 use Fone\UserBundle\Document\Account;
 use Fone\UserBundle\Manager\AccountManager;
@@ -67,10 +69,12 @@ class DefaultController extends Controller
         $user       = $this->getUser();
         $accountIds = $this->_getAccountIds($user);
 
+        $categories = $this->_cleanAndGetCategories($category);
+
         $tm           = $this->getTransactionManager();
         $transactions = $tm->findTransactionsCategoryDate(
             $accountIds,
-            $category,
+            $categories,
             intval($day),
             intval($month),
             (is_null($year)) ? null : intval($year),
@@ -100,8 +104,10 @@ class DefaultController extends Controller
         $user       = $this->getUser();
         $accountIds = $this->_getAccountIds($user);
 
+        $categories = $this->_cleanAndGetCategories($category);
+
         $tm           = $this->getTransactionManager();
-        $transactions = $tm->findTransactionsCategory($accountIds, $category, $num, $pager);
+        $transactions = $tm->findTransactionsCategory($accountIds, $categories, $num, $pager);
 
         return array("transactions" => $transactions);
     }
@@ -270,10 +276,12 @@ class DefaultController extends Controller
         $user       = $this->getUser();
         $accountIds = $this->_getAccountIds($user);
 
+        $categories = $this->_cleanAndGetCategories($category);
+
         $tm    = $this->getTransactionManager();
         $spent = $tm->findSpentCategory($accountIds, $category);
 
-        return array('category' => $category, 'spent' => $spent);
+        return array('category' => $categories, 'spent' => $spent);
     }
 
     /**
@@ -325,10 +333,12 @@ class DefaultController extends Controller
         $user       = $this->getUser();
         $accountIds = $this->_getAccountIds($user);
 
+        $categories = $this->_cleanAndGetCategories($category);
+
         $tm    = $this->getTransactionManager();
         $spent = $tm->findSpentCategoryDate(
             $accountIds,
-            $category,
+            $categories,
             intval($day),
             intval($month),
             (is_null($year)) ? null : intval($year)
@@ -428,10 +438,39 @@ class DefaultController extends Controller
         return $accountIds;
     }
 
+    private function _cleanAndGetCategories($category)
+    {
+
+        $category = str_replace("-", " ", $category);
+
+        $cm = $this->getCategoryManager();
+        $categories = $cm->findByName($category);
+
+        $result = array();
+
+        /** @var Category $foundCategory */
+        foreach ($categories as $foundCategory)
+        {
+            $cm->getChildrenCategories($foundCategory->getId(), $result);
+        }
+
+        if (empty($result)) {
+            $result[] = $category;
+        }
+
+        return $result;
+    }
+
     /** @return TransactionManager */
     private function getTransactionManager()
     {
         return $this->get('transaction.transaction_manager');
+    }
+
+    /** @return CategoryManager */
+    private function getCategoryManager()
+    {
+        return $this->get('transaction.category_manager');
     }
 
     /** @return AccountManager */

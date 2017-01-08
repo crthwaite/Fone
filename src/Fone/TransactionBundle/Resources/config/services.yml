@@ -1,9 +1,16 @@
 parameters:
   transaction.transaction.class: Fone\TransactionBundle\Manager\TransactionManager
   transaction.transaction.entity_class: Fone\TransactionBundle\Document\Transaction
+  transaction.category.class: Fone\TransactionBundle\Manager\CategoryManager
+  transaction.category.entity_class: Fone\TransactionBundle\Document\Category
 
 services:
   transaction.transaction_manager:
     class: "%transaction.transaction.class%"
     arguments: [ "%transaction.transaction.entity_class%" ]
+    parent: core.core_manager
+
+  transaction.category_manager:
+    class: "%transaction.category.class%"
+    arguments: [ "%transaction.category.entity_class%" ]
     parent: core.core_manager

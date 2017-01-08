@@ -67,11 +67,11 @@ class TransactionRepository extends DocumentRepository
         return $qb->getQuery()->execute();
     }
 
-    public function getSpentCategory($accountIds, $category, $num = null, $pager = null)
+    public function getSpentCategory($accountIds, $categories, $num = null, $pager = null)
     {
         $qb = $this->createQueryBuilder()
             ->field('account')->in($accountIds)
-            ->field('peerActivity')->equals($category);
+            ->field('peerActivity')->in($categories);
 
         if (!is_null($num)) {
             $qb->limit($num);
@@ -85,11 +85,11 @@ class TransactionRepository extends DocumentRepository
 
     }
 
-    public function getSpentCategoryDate($accountIds, $category, $day, $month, $num = null, $pager = null)
+    public function getSpentCategoryDate($accountIds, $categories, $day, $month, $num = null, $pager = null)
     {
         $qb = $this->createQueryBuilder()
             ->field('account')->in($accountIds)
-            ->field('peerActivity')->equals($category)
+            ->field('peerActivity')->in($categories)
             ->field('operationDay')->equals($day)
             ->field('operationMonth')->equals($month);
 
@@ -104,11 +104,11 @@ class TransactionRepository extends DocumentRepository
         return $qb->getQuery()->execute();
     }
 
-    public function getSpentCategoryFullDate($accountIds, $category, $day, $month, $year, $num = null, $pager = null)
+    public function getSpentCategoryFullDate($accountIds, $categories, $day, $month, $year, $num = null, $pager = null)
     {
         $qb = $this->createQueryBuilder()
             ->field('account')->in($accountIds)
-            ->field('peerActivity')->equals($category)
+            ->field('peerActivity')->in($categories)
             ->field('operationDay')->equals($day)
             ->field('operationMonth')->equals($month)
             ->field('operationYear')->equals($year);
