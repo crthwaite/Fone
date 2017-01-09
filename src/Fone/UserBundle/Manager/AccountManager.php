@@ -9,6 +9,7 @@
 namespace Fone\UserBundle\Manager;
 
 use Fone\CoreBundle\Manager\CoreManager;
+use Fone\UserBundle\Document\Account;
 use Fone\UserBundle\Document\Repository\AccountRepository;
 
 class AccountManager extends CoreManager
@@ -16,6 +17,19 @@ class AccountManager extends CoreManager
     public function findByUser($user)
     {
         return $this->getRepository()->findByUser($user);
+    }
+
+    public function getAmountByUser($user)
+    {
+        $accounts = $this->getRepository()->findByUser($user);
+
+        $money = 0.0;
+        /** @var Account $account */
+        foreach ($accounts as $account) {
+            $money += $account->getAmount();
+        }
+
+        return $money;
     }
 
     /** @return AccountRepository */

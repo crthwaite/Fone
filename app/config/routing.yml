@@ -13,6 +13,11 @@ transaction:
     type:     annotation
     prefix:   /transactions/
 
+accounts:
+    resource: "@UserBundle/Controller/DefaultController.php"
+    type:     annotation
+    prefix:   /accounts/
+
 fos_user:
     resource: "@FOSUserBundle/Resources/config/routing/all.xml"
 

@@ -374,10 +374,6 @@ class DefaultController extends Controller
         return array('key' => key($result), 'result' => $result[key($result)]);
     }
 
-
-
-
-
     private function getNumericMonth($month)
     {
         $month = strtolower(trim($month));
