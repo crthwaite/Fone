@@ -571,10 +571,22 @@ var weekDayMostSpent = function () {
         success: function(result) {
             $('#result').html(result);
             var day = dictDay( $("#day").text() );
-            console.log(typeof ($("#day").text()) );
             var daySpent = $('#daySpent').text();
             speechSynth("El dia de la semana que  gastas más dinero és: " + day
                 + " con un gasto total de: " + Math.abs(parseFloat(daySpent)) + "euros");
+        }
+    });
+}
+
+var accountMoney = function () {
+    var url = Routing.generate("user_default_amount");
+    $.ajax({
+        url: url,
+        success: function(result) {
+            $('#result').html(result);
+            var money = Math.abs(parseInt($("#money").text() ));
+            var aux = parseFloat($("#money").text() ) - money;
+            speechSynth("Actualmente tienes: " + money + " euros en tu cuenta.");
         }
     });
 }
@@ -845,6 +857,8 @@ function addAnnyangCommands(){
         'año con más gastos': yearMostSpent,
         'mes en el que gasto más': monthMostSpent,
         'dia de la semana que gasto más': weekDayMostSpent,
+        'dinero en la cuenta': accountMoney,
+        'saldo en la cuenta': accountMoney,
         'Ayuda': help
     };
     annyang.addCommands(commands);
