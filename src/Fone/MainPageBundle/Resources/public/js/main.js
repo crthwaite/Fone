@@ -522,6 +522,73 @@ var moreOrNot = {
     ':res por favor': moreOrNotMethod
 }
 
+var yearMostSpent = function () {
+    var url = Routing.generate("transaction_default_spent_year");
+    $.ajax({
+        url: url,
+        success: function(result) {
+            $('#result').html(result);
+            var year = $("#year").text().toLowerCase();
+            var yearSpent = $('#yearSpent').text();
+            speechSynth("El año que has gastado más dinero és: " + year
+            + " con un gasto total de: " + Math.abs(parseFloat(yearSpent)) + "euros");
+        }
+    });
+}
+
+var monthMostSpent = function () {
+    var url = Routing.generate("transaction_default_spent_month");
+    $.ajax({
+        url: url,
+        success: function(result) {
+            $('#result').html(result);
+            var dictMonth = {
+                'january': 'enero',
+                'february':'febrero',
+                'march': 'marzo',
+                'april': 'abril',
+                'may': 'mayo',
+                'juny': 'junio',
+                'july': 'julio',
+                'august': 'agosto',
+                'september': 'septiembre',
+                'october': 'octubre',
+                'november': 'noviembre',
+                'december': 'diciembre'
+            }
+            var month = dictMonth[$("#month").text().toLowerCase()];
+            var monthSpent = $('#monthSpent').text();
+            speechSynth("El mes del año que gastas más dinero és: " + month
+                + " con un gasto total de: " + Math.abs(parseFloat(monthSpent)) + "euros");
+        }
+    });
+}
+
+var weekDayMostSpent = function () {
+    var url = Routing.generate("transaction_default_spent_week_day");
+    $.ajax({
+        url: url,
+        success: function(result) {
+            $('#result').html(result);
+            var day = dictDay( $("#day").text() );
+            console.log(typeof ($("#day").text()) );
+            var daySpent = $('#daySpent').text();
+            speechSynth("El dia de la semana que  gastas más dinero és: " + day
+                + " con un gasto total de: " + Math.abs(parseFloat(daySpent)) + "euros");
+        }
+    });
+}
+
+function dictDay(day) {
+    if(day == "Monday") { return "lunes"; }
+    else if(day == "Tuesday") { return "martes"; }
+    else if(day == "Wednesday") {return "miércoles"; }
+    else if(day == "Thursday") { return "jueves"; }
+    else if(day == "Friday") { return "viernes"; }
+    else if(day == "Saturday") { return "sábado"; }
+    else if(day == "Sunday") { return "domingo";}
+
+}
 var moreOrNotMethod = function(res){
     if (res == 'sí') {
         ++pager;
@@ -608,18 +675,6 @@ function speechSynth(text, resum ) {
     synth.speak(utterance);
 }
 
-function startSpeechSynth(text) {
-    var synth2 = window.speechSynthesis;
-    var utterance2 = new SpeechSynthesisUtterance(text);
-    utterance2.lang = 'es-ES';
-    synth2.speak(utterance2);
-}
-function speechCommand(text){
-    var utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'es-ES';
-    synth.speak(utterance);
-    synth.speak('¿Algo mas?');
-}
 /* ######################################################################*/
 
 
@@ -787,6 +842,9 @@ function addAnnyangCommands(){
         'último movimiento': myTransaction,
         'últimos :num movimientos'  : myTransactions,
         'ciudad con más movimientos': mostVisitedCity,
+        'año con más gastos': yearMostSpent,
+        'mes en el que gasto más': monthMostSpent,
+        'dia de la semana que gasto más': weekDayMostSpent,
         'Ayuda': help
     };
     annyang.addCommands(commands);
